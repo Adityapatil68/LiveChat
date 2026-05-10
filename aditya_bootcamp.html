@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya's 60-Day Placement Bootcamp</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;
+  --surface:#111118;
+  --surface2:#18181f;
+  --surface3:#1f1f28;
+  --border:#2a2a38;
+  --border2:#363648;
+  --accent:#f0a500;
+  --accent2:#e06c00;
+  --java:#4fc3f7;
+  --python:#a5d6a7;
+  --sql:#ce93d8;
+  --dsa:#ff8a65;
+  --mock:#f48fb1;
+  --theory:#80cbc4;
+  --code:#ffd54f;
+  --text:#e8e8f0;
+  --muted:#7a7a96;
+  --muted2:#4a4a62;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Mono',monospace;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* NOISE TEXTURE OVERLAY */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.5;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,10,15,0.92);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:60px;
+}
+.nav-brand{
+  font-family:'Syne',sans-serif;
+  font-weight:800;font-size:1rem;
+  color:var(--accent);letter-spacing:-0.02em;
+}
+.nav-brand span{color:var(--muted);font-weight:400}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{
+  font-size:0.72rem;color:var(--muted);
+  text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--accent)}
+.nav-progress{
+  display:flex;align-items:center;gap:10px;
+  font-size:0.7rem;color:var(--muted);
+}
+.progress-bar-mini{
+  width:100px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;
+}
+.progress-bar-mini-fill{
+  height:100%;background:var(--accent);border-radius:2px;
+  transition:width 0.5s ease;width:0%;
+}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:80px 2rem 4rem;
+  position:relative;text-align:center;
+}
+.hero-grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(240,165,0,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(240,165,0,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 40%,transparent 100%);
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--accent);border:1px solid rgba(240,165,0,0.3);
+  padding:6px 14px;border-radius:20px;margin-bottom:2rem;
+  background:rgba(240,165,0,0.05);
+}
+.hero-eyebrow::before{content:'◈';font-size:0.8rem}
+h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.8rem,7vw,5.5rem);
+  font-weight:800;line-height:1.0;
+  letter-spacing:-0.04em;
+  margin-bottom:1.5rem;
+}
+h1 .line1{display:block;color:var(--text)}
+h1 .line2{
+  display:block;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  font-family:'Lora',serif;
+  font-size:1.05rem;color:var(--muted);
+  max-width:560px;line-height:1.7;margin-bottom:3rem;
+}
+.hero-stats{
+  display:flex;gap:0;border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  margin-bottom:3rem;background:var(--surface);
+}
+.hero-stat{
+  padding:1.2rem 2rem;text-align:center;
+  border-right:1px solid var(--border);flex:1;
+  transition:background 0.2s;
+}
+.hero-stat:last-child{border-right:none}
+.hero-stat:hover{background:var(--surface2)}
+.stat-num{
+  font-family:'Syne',sans-serif;font-size:2rem;
+  font-weight:800;color:var(--accent);display:block;
+}
+.stat-lbl{font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+.hero-cta{
+  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+}
+.btn-primary{
+  background:var(--accent);color:#000;
+  font-family:'Syne',sans-serif;font-weight:700;
+  padding:14px 32px;border-radius:8px;border:none;
+  cursor:pointer;font-size:0.85rem;letter-spacing:0.05em;
+  text-decoration:none;display:inline-block;
+  transition:all 0.2s;
+}
+.btn-primary:hover{background:#ffb800;transform:translateY(-2px)}
+.btn-secondary{
+  background:transparent;color:var(--text);
+  font-family:'Syne',sans-serif;font-weight:600;
+  padding:14px 32px;border-radius:8px;
+  border:1px solid var(--border2);
+  cursor:pointer;font-size:0.85rem;letter-spacing:0.05em;
+  text-decoration:none;display:inline-block;
+  transition:all 0.2s;
+}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+/* PROGRESS TRACKER */
+.tracker-section{
+  padding:5rem 2rem;max-width:1100px;margin:0 auto;
+  position:relative;
+}
+.section-label{
+  font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:8px;
+}
+.section-label::before{content:'';width:24px;height:1px;background:var(--accent)}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:2rem;
+  font-weight:700;margin-bottom:0.5rem;letter-spacing:-0.02em;
+}
+.section-sub{font-size:0.8rem;color:var(--muted);margin-bottom:2.5rem;line-height:1.6}
+
+.progress-overview{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;margin-bottom:2rem;
+}
+.progress-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;
+}
+.progress-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
+.progress-pct{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:1.8rem;color:var(--accent);
+}
+.big-progress-bar{
+  height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:1.5rem;
+}
+.big-progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));
+  border-radius:4px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);width:0%;
+}
+.week-dots{display:flex;gap:8px;flex-wrap:wrap}
+.week-dot{
+  flex:1;min-width:80px;padding:10px 12px;
+  border:1px solid var(--border);border-radius:8px;
+  text-align:center;cursor:pointer;transition:all 0.2s;
+  background:var(--surface2);
+}
+.week-dot:hover{border-color:var(--border2);background:var(--surface3)}
+.week-dot.active-week{border-color:var(--accent);background:rgba(240,165,0,0.08)}
+.week-dot.done{border-color:var(--python);background:rgba(165,214,167,0.06)}
+.week-dot-num{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.week-dot-label{font-size:0.7rem;font-family:'Syne',sans-serif;font-weight:600;margin-top:3px;color:var(--text)}
+.week-dot-check{font-size:0.65rem;color:var(--python);margin-top:3px}
+
+/* DAY TRACKER */
+.day-tracker{display:flex;gap:4px;flex-wrap:wrap;margin-top:1rem}
+.day-box{
+  width:28px;height:28px;border-radius:4px;
+  border:1px solid var(--border);
+  background:var(--surface2);cursor:pointer;
+  transition:all 0.15s;display:flex;align-items:center;justify-content:center;
+  font-size:0.55rem;color:var(--muted2);
+  position:relative;
+}
+.day-box:hover{border-color:var(--accent);background:rgba(240,165,0,0.1);color:var(--accent)}
+.day-box.completed{background:rgba(165,214,167,0.2);border-color:var(--python);color:var(--python)}
+.day-box.today{border-color:var(--accent);background:rgba(240,165,0,0.15);color:var(--accent);font-weight:700}
+.day-box.today::after{
+  content:'';position:absolute;top:-4px;right:-4px;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);animation:pulse 1.5s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+
+/* WEEK SCHEDULE */
+.schedule-section{padding:2rem 2rem 5rem;max-width:1100px;margin:0 auto}
+.week-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2rem}
+.wtab{
+  padding:8px 18px;border-radius:6px;
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--muted);font-family:'Syne',sans-serif;
+  font-size:0.72rem;font-weight:600;cursor:pointer;
+  letter-spacing:0.06em;transition:all 0.2s;
+}
+.wtab:hover{border-color:var(--border2);color:var(--text)}
+.wtab.active{background:var(--accent);color:#000;border-color:var(--accent)}
+
+.week-panel{display:none}
+.week-panel.active{display:block}
+
+.week-header-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.5rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.wh-left{}
+.wh-eyebrow{font-size:0.65rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px}
+.wh-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:-0.02em}
+.wh-right{display:flex;gap:8px;flex-wrap:wrap}
+.skill-tag{
+  padding:4px 12px;border-radius:20px;font-size:0.65rem;
+  font-family:'Syne',sans-serif;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+}
+.tag-java{background:rgba(79,195,247,0.12);color:var(--java);border:1px solid rgba(79,195,247,0.25)}
+.tag-python{background:rgba(165,214,167,0.12);color:var(--python);border:1px solid rgba(165,214,167,0.25)}
+.tag-sql{background:rgba(206,147,216,0.12);color:var(--sql);border:1px solid rgba(206,147,216,0.25)}
+.tag-dsa{background:rgba(255,138,101,0.12);color:var(--dsa);border:1px solid rgba(255,138,101,0.25)}
+.tag-ui{background:rgba(240,165,0,0.12);color:var(--accent);border:1px solid rgba(240,165,0,0.25)}
+.tag-final{background:rgba(244,143,177,0.12);color:var(--mock);border:1px solid rgba(244,143,177,0.25)}
+
+/* AI TIP BAR */
+.ai-tip-bar{
+  background:rgba(240,165,0,0.06);border:1px solid rgba(240,165,0,0.2);
+  border-radius:8px;padding:12px 16px;margin-bottom:1.5rem;
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:0.75rem;color:rgba(240,165,0,0.9);line-height:1.6;
+}
+.ai-tip-bar::before{content:'◆ AI WORKFLOW:';font-weight:700;white-space:nowrap;margin-right:4px}
+
+/* DAY CARDS */
+.days-grid{display:flex;flex-direction:column;gap:10px}
+.day-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+  transition:border-color 0.2s,background 0.2s;
+}
+.day-card:hover{border-color:var(--border2)}
+.day-card-header{
+  display:grid;grid-template-columns:80px 1fr auto;
+  align-items:center;gap:0;cursor:pointer;
+  padding:14px 18px;
+}
+.day-label{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:0.75rem;color:var(--muted);letter-spacing:0.05em;
+}
+.day-title{font-size:0.8rem;color:var(--text);line-height:1.4}
+.day-expand-btn{
+  width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--border2);background:transparent;
+  color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;transition:all 0.2s;flex-shrink:0;
+}
+.day-card.expanded .day-expand-btn{
+  background:var(--accent);color:#000;border-color:var(--accent);
+  transform:rotate(45deg);
+}
+.day-card-body{
+  display:none;
+  border-top:1px solid var(--border);
+}
+.day-card.expanded .day-card-body{display:grid;grid-template-columns:repeat(3,1fr)}
+.block{padding:16px 18px;border-right:1px solid var(--border)}
+.block:last-child{border-right:none}
+.block-label{
+  font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;
+  margin-bottom:8px;font-weight:500;display:flex;align-items:center;gap:6px;
+}
+.block-label::before{content:'';width:6px;height:6px;border-radius:50%}
+.block.theory .block-label{color:var(--theory)}
+.block.theory .block-label::before{background:var(--theory)}
+.block.coding .block-label{color:var(--code)}
+.block.coding .block-label::before{background:var(--code)}
+.block.mock .block-label{color:var(--mock)}
+.block.mock .block-label::before{background:var(--mock)}
+.block-content{font-size:0.75rem;color:var(--muted);line-height:1.65}
+.block.mock .block-content{font-style:italic;color:rgba(244,143,177,0.8)}
+
+.day-complete-btn{
+  margin:12px 18px;padding:6px 14px;
+  background:transparent;border:1px solid var(--border2);
+  border-radius:6px;color:var(--muted);font-size:0.65rem;
+  font-family:'DM Mono',monospace;cursor:pointer;
+  transition:all 0.2s;letter-spacing:0.08em;
+}
+.day-complete-btn:hover{border-color:var(--python);color:var(--python)}
+.day-complete-btn.done{border-color:var(--python);color:var(--python);background:rgba(165,214,167,0.08)}
+
+/* PROJECT SECTION */
+.project-section{
+  padding:4rem 2rem;max-width:1100px;margin:0 auto;
+  border-top:1px solid var(--border);
+}
+.project-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+}
+.project-card-header{
+  background:linear-gradient(135deg,rgba(240,165,0,0.12),rgba(224,108,0,0.08));
+  border-bottom:1px solid var(--border);
+  padding:2rem;display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;
+}
+.project-icon{
+  width:56px;height:56px;border-radius:12px;
+  background:rgba(240,165,0,0.15);border:1px solid rgba(240,165,0,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0;
+}
+.project-info{}
+.project-name{
+  font-family:'Syne',sans-serif;font-size:1.3rem;
+  font-weight:800;letter-spacing:-0.02em;color:var(--accent);margin-bottom:4px;
+}
+.project-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;max-width:500px}
+.project-tech{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tech-pill{
+  padding:3px 10px;border-radius:20px;font-size:0.62rem;
+  font-family:'Syne',sans-serif;font-weight:600;letter-spacing:0.08em;
+}
+.milestones{padding:0}
+.milestone{
+  display:grid;grid-template-columns:90px 1fr;gap:0;
+  border-bottom:1px solid var(--border);
+  transition:background 0.15s;
+}
+.milestone:last-child{border-bottom:none}
+.milestone:hover{background:var(--surface2)}
+.ms-week{
+  padding:16px 20px;font-family:'Syne',sans-serif;
+  font-size:0.7rem;font-weight:700;color:var(--accent);
+  border-right:1px solid var(--border);display:flex;align-items:center;
+}
+.ms-content{padding:16px 20px}
+.ms-title{font-family:'Syne',sans-serif;font-weight:600;font-size:0.8rem;margin-bottom:4px}
+.ms-desc{font-size:0.72rem;color:var(--muted);line-height:1.5}
+
+/* AI TOOLS SECTION */
+.tools-section{
+  padding:4rem 2rem;max-width:1100px;margin:0 auto;
+  border-top:1px solid var(--border);
+}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:2rem}
+.tool-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.25rem;
+  transition:all 0.2s;cursor:default;
+}
+.tool-card:hover{border-color:var(--border2);background:var(--surface2)}
+.tool-icon{font-size:1.4rem;margin-bottom:10px}
+.tool-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:6px}
+.tool-use{font-size:0.72rem;color:var(--muted);line-height:1.5}
+.tool-tip{
+  margin-top:10px;padding:8px;border-radius:6px;
+  background:var(--surface3);font-size:0.68rem;
+  color:var(--muted);line-height:1.5;
+  border-left:2px solid var(--accent);
+}
+.tool-tip::before{content:'Prompt: ';color:var(--accent);font-weight:500}
+
+/* TIPS SECTION */
+.tips-section{
+  padding:4rem 2rem;max-width:1100px;margin:0 auto;
+  border-top:1px solid var(--border);
+}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:2rem}
+.tip-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.25rem 1.5rem;
+  border-left:3px solid var(--accent);
+}
+.tip-num{font-size:0.65rem;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px}
+.tip-text{font-size:0.78rem;color:var(--text);line-height:1.65}
+.tip-text strong{color:var(--accent)}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);
+  padding:3rem 2rem;text-align:center;
+  font-size:0.72rem;color:var(--muted);line-height:2;
+}
+footer .footer-name{
+  font-family:'Syne',sans-serif;font-size:1.5rem;
+  font-weight:800;color:var(--accent);display:block;margin-bottom:0.5rem;
+}
+footer a{color:var(--accent);text-decoration:none}
+
+/* ANIMATIONS */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeInUp 0.6s ease forwards;opacity:0}
+.fade-in:nth-child(1){animation-delay:0.1s}
+.fade-in:nth-child(2){animation-delay:0.25s}
+.fade-in:nth-child(3){animation-delay:0.4s}
+.fade-in:nth-child(4){animation-delay:0.55s}
+.fade-in:nth-child(5){animation-delay:0.7s}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  nav{padding:0 1rem}
+  .nav-links{display:none}
+  h1{font-size:2.4rem}
+  .hero-stats{flex-direction:column}
+  .hero-stat{border-right:none;border-bottom:1px solid var(--border)}
+  .hero-stat:last-child{border-bottom:none}
+  .day-card-body{grid-template-columns:1fr}
+  .block{border-right:none;border-bottom:1px solid var(--border)}
+  .block:last-child{border-bottom:none}
+  .day-card-header{grid-template-columns:60px 1fr auto}
+  .milestone{grid-template-columns:70px 1fr}
+  .week-tabs{gap:4px}
+  .wtab{padding:6px 12px;font-size:0.65rem}
+}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;
+  background:var(--surface3);border:1px solid var(--border2);
+  border-radius:10px;padding:12px 20px;
+  font-size:0.75rem;color:var(--text);
+  z-index:1000;transform:translateY(100px);opacity:0;
+  transition:all 0.3s;pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{color:var(--python)}
+
+/* LEETCODE TRACKER */
+.leet-section{
+  padding:3rem 2rem;max-width:1100px;margin:0 auto;
+  border-top:1px solid var(--border);
+}
+.leet-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;
+}
+.leet-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.leet-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
+.leet-counts{display:flex;gap:1rem}
+.leet-count{text-align:center}
+.leet-count-num{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800}
+.leet-count-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.lc-easy .leet-count-num{color:var(--python)}
+.lc-med .leet-count-num{color:var(--accent)}
+.lc-hard .leet-count-num{color:var(--mock)}
+.leet-add-row{display:flex;gap:8px;flex-wrap:wrap}
+.leet-input{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:8px 14px;
+  color:var(--text);font-family:'DM Mono',monospace;font-size:0.78rem;
+  outline:none;flex:1;min-width:180px;
+}
+.leet-input:focus{border-color:var(--accent)}
+.leet-select{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:8px 14px;
+  color:var(--text);font-family:'DM Mono',monospace;font-size:0.78rem;
+  outline:none;cursor:pointer;
+}
+.btn-add{
+  background:var(--accent);color:#000;border:none;
+  padding:8px 20px;border-radius:6px;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.75rem;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.btn-add:hover{background:#ffb800}
+.leet-log{margin-top:1rem;display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto}
+.leet-item{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--surface2);border-radius:6px;padding:8px 14px;
+  font-size:0.75rem;
+}
+.leet-item-name{color:var(--text)}
+.diff-badge{
+  padding:2px 8px;border-radius:10px;font-size:0.62rem;
+  font-family:'Syne',sans-serif;font-weight:600;
+}
+.diff-Easy{background:rgba(165,214,167,0.15);color:var(--python)}
+.diff-Medium{background:rgba(240,165,0,0.15);color:var(--accent)}
+.diff-Hard{background:rgba(244,143,177,0.15);color:var(--mock)}
+.leet-item-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:0.9rem;padding:0 4px}
+.leet-item-del:hover{color:var(--mock)}
+.leet-empty{color:var(--muted2);font-size:0.75rem;text-align:center;padding:1rem}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">ADITYA<span>'s BOOTCAMP</span></div>
+  <div class="nav-links">
+    <a href="#tracker">Progress</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#project">Project</a>
+    <a href="#leetcode">LeetCode</a>
+    <a href="#tools">AI Tools</a>
+  </div>
+  <div class="nav-progress">
+    <span id="nav-days-done">0</span>/60 days
+    <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="nav-prog"></div></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="fade-in">
+    <div class="hero-eyebrow">MCA Placement · 60-Day Bootcamp · Class of 2025</div>
+  </div>
+  <h1 class="fade-in">
+    <span class="line1">From Student</span>
+    <span class="line2">To Placed.</span>
+  </h1>
+  <p class="hero-sub fade-in">
+    A senior recruiter-designed, AI-augmented 8-week sprint covering Java, Multithreading, JDBC, Swing, Python, SQL/DBMS & DSA. Every day. No excuses.
+  </p>
+  <div class="hero-stats fade-in">
+    <div class="hero-stat">
+      <span class="stat-num">60</span>
+      <span class="stat-lbl">Days</span>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-num">3</span>
+      <span class="stat-lbl">Blocks/Day</span>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-num" id="hero-done-stat">0</span>
+      <span class="stat-lbl">Days Done</span>
+    </div>
+    <div class="hero-stat">
+      <span class="stat-num">1</span>
+      <span class="stat-lbl">Portfolio App</span>
+    </div>
+  </div>
+  <div class="hero-cta fade-in">
+    <a href="#tracker" class="btn-primary">Start Tracking →</a>
+    <a href="#schedule" class="btn-secondary">View Schedule</a>
+  </div>
+</section>
+
+<!-- PROGRESS TRACKER -->
+<section class="tracker-section" id="tracker">
+  <div class="section-label">Day Tracker</div>
+  <div class="section-title">Your 60-Day Journey</div>
+  <p class="section-sub">Click any day box to mark it complete. Your progress is saved automatically in your browser.</p>
+
+  <div class="progress-overview">
+    <div class="progress-header">
+      <div>
+        <div class="progress-title">Overall Progress</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px" id="progress-sub">0 of 60 days completed</div>
+      </div>
+      <div class="progress-pct" id="prog-pct">0%</div>
+    </div>
+    <div class="big-progress-bar"><div class="big-progress-fill" id="big-prog"></div></div>
+    <div class="week-dots" id="week-dots"></div>
+  </div>
+
+  <div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px;display:flex;gap:16px;flex-wrap:wrap">
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:rgba(165,214,167,0.2);border:1px solid var(--python);display:inline-block"></span>Completed</span>
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:rgba(240,165,0,0.15);border:1px solid var(--accent);display:inline-block;position:relative"><span style="position:absolute;top:-4px;right:-4px;width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block"></span></span>Today</span>
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);display:inline-block"></span>Upcoming</span>
+  </div>
+  <div class="day-tracker" id="day-tracker"></div>
+</section>
+
+<!-- SCHEDULE -->
+<section class="schedule-section" id="schedule">
+  <div class="section-label">Full Schedule</div>
+  <div class="section-title">8 Weeks · 3 Blocks Daily</div>
+  <p class="section-sub">Click any day to expand Theory, Coding, and Mock Interview blocks. Mark days complete to track progress.</p>
+
+  <div class="week-tabs" id="week-tabs"></div>
+  <div id="week-panels"></div>
+</section>
+
+<!-- PROJECT -->
+<section class="project-section" id="project">
+  <div class="section-label">Portfolio Capstone</div>
+  <div class="section-title">SmartCampus — Student Management System</div>
+  <p class="section-sub">Built incrementally across all 8 weeks. Demo-able, architecturally defensible, and GitHub-ready by Day 60.</p>
+
+  <div class="project-card">
+    <div class="project-card-header">
+      <div class="project-icon">🎓</div>
+      <div class="project-info">
+        <div class="project-name">SmartCampus</div>
+        <div class="project-desc">A full-stack Student Management System featuring multithreaded notifications, JDBC persistence, Swing GUI dashboard, Python analytics, and a REST API layer. Built to demonstrate every skill interviewers test for.</div>
+        <div class="project-tech">
+          <span class="tech-pill tag-java">Java 17</span>
+          <span class="tech-pill tag-python">Python</span>
+          <span class="tech-pill tag-sql">MySQL</span>
+          <span class="tech-pill tag-dsa">JDBC</span>
+          <span class="tech-pill tag-ui">Swing UI</span>
+          <span class="tech-pill" style="background:rgba(79,195,247,0.12);color:#b3e5fc;border:1px solid rgba(79,195,247,0.25)">REST API</span>
+          <span class="tech-pill" style="background:rgba(165,214,167,0.12);color:var(--python);border:1px solid rgba(165,214,167,0.25)">Pandas</span>
+          <span class="tech-pill" style="background:rgba(255,138,101,0.12);color:var(--dsa);border:1px solid rgba(255,138,101,0.25)">JUnit</span>
+        </div>
+      </div>
+    </div>
+    <div class="milestones" id="milestones"></div>
+  </div>
+</section>
+
+<!-- LEETCODE TRACKER -->
+<section class="leet-section" id="leetcode">
+  <div class="section-label">Problem Log</div>
+  <div class="section-title">LeetCode Tracker</div>
+  <p class="section-sub">Log every problem you solve. Target: 60+ by Day 60 (15 Easy, 35 Medium, 10+ Hard).</p>
+
+  <div class="leet-card">
+    <div class="leet-header">
+      <div class="leet-title">Problems Solved</div>
+      <div class="leet-counts">
+        <div class="leet-count lc-easy"><div class="leet-count-num" id="ct-easy">0</div><div class="leet-count-lbl">Easy</div></div>
+        <div class="leet-count lc-med"><div class="leet-count-num" id="ct-med">0</div><div class="leet-count-lbl">Medium</div></div>
+        <div class="leet-count lc-hard"><div class="leet-count-num" id="ct-hard">0</div><div class="leet-count-lbl">Hard</div></div>
+      </div>
+    </div>
+    <div class="leet-add-row">
+      <input class="leet-input" id="leet-name" placeholder="Problem name (e.g. Two Sum, Merge Intervals...)" />
+      <select class="leet-select" id="leet-diff">
+        <option>Easy</option><option selected>Medium</option><option>Hard</option>
+      </select>
+      <button class="btn-add" onclick="addProblem()">+ Add</button>
+    </div>
+    <div class="leet-log" id="leet-log"><div class="leet-empty">No problems logged yet. Start solving!</div></div>
+  </div>
+</section>
+
+<!-- AI TOOLS -->
+<section class="tools-section" id="tools">
+  <div class="section-label">AI Workflow</div>
+  <div class="section-title">Tools That Make You Unfair</div>
+  <p class="section-sub">Use these every day. Most candidates don't — that's your edge.</p>
+  <div class="tools-grid" id="tools-grid"></div>
+</section>
+
+<!-- RECRUITER TIPS -->
+<section class="tips-section" id="tips">
+  <div class="section-label">Recruiter Advice</div>
+  <div class="section-title">How to Actually Stand Out</div>
+  <div class="tips-grid" id="tips-grid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-name">ADITYA — MCA 2025</span>
+  60 Days · Java · Python · SQL · DSA · SmartCampus Project<br>
+  Progress saved in browser localStorage · Built with intent to place
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toast-msg">Day marked complete!</span>
+</div>
+
+<script>
+// ───── DATA ─────
+const WEEKS = [
+  {
+    title:"Java Foundations + Core OOP",
+    tags:["tag-java"],tagLabels:["Java Core"],
+    aiTip:"Use Claude to explain JVM internals in plain language. Then teach it back — 'Feynman prompting' — before you touch code.",
+    days:[
+      {label:"Mon D1",title:"JVM Architecture & Setup",
+        theory:"JVM architecture, JDK vs JRE, compilation pipeline, bytecode, class loaders. How Java achieves platform independence.",
+        coding:"Write & run Hello World; explore javac flags; print JVM args programmatically; inspect bytecode with javap.",
+        mock:'"Explain step by step what happens between typing `javac HelloWorld.java` and the program executing."'},
+      {label:"Tue D2",title:"OOP — Encapsulation & Inheritance",
+        theory:"OOP pillars: encapsulation, inheritance, polymorphism, abstraction. Access modifiers: private, protected, public, default.",
+        coding:"Model a Bank Account class hierarchy with SavingsAccount and CurrentAccount subclasses. Enforce encapsulation.",
+        mock:'"What is the difference between method overloading and method overriding? Show code."'},
+      {label:"Wed D3",title:"Interfaces & Abstract Classes",
+        theory:"Interfaces vs abstract classes; default methods (Java 8); functional interfaces; when to use each.",
+        coding:"Build a Shape interface with Circle, Rectangle, Triangle implementing area() and perimeter(). Add a Drawable interface.",
+        mock:'"Can an interface have a constructor? Can it have instance variables? Explain why."'},
+      {label:"Thu D4",title:"Collections Framework",
+        theory:"List, Set, Map, Queue internal implementations. ArrayList vs LinkedList vs HashMap vs TreeMap. Time complexities.",
+        coding:"Word frequency counter using HashMap; compare ArrayList vs LinkedList on 100k inserts; implement custom Iterator.",
+        mock:'"How does HashMap handle collisions internally? What happens when load factor is exceeded?"'},
+      {label:"Fri D5",title:"Exception Handling",
+        theory:"Checked vs unchecked exceptions. try-with-resources. Custom exception hierarchy. Exception chaining. Best practices.",
+        coding:"Build a robust file parser that throws typed custom exceptions (FileFormatException, DataValidationException). Log traces.",
+        mock:'"When would you use a checked vs unchecked exception? Give a production-grade example."'},
+      {label:"Sat D6",title:"Java 8+ — Streams & Lambdas",
+        theory:"Lambdas, Stream API, Optional, method references, Collectors. Functional programming paradigm in Java.",
+        coding:"Refactor Day 4 word counter using Streams. Chain filter/map/collect/groupingBy. Solve 5 stream puzzles.",
+        mock:'"What is a lambda expression? How does it relate to functional interfaces and the SAM rule?"'},
+      {label:"Sun D7",title:"Review + GitHub Project Setup",
+        theory:"Git workflow: init, commit, branch, push. Maven/Gradle project structure. README best practices.",
+        coding:"Set up SmartCampus Maven project. Create package structure (model, dao, service, ui). Push to GitHub with README.",
+        mock:'"Walk me through your GitHub profile. What does your best project solve and why did you build it?"'},
+    ]
+  },
+  {
+    title:"Java Multithreading + Concurrency",
+    tags:["tag-java"],tagLabels:["Multithreading"],
+    aiTip:"Paste your multithreaded code into Claude and ask 'find all possible race conditions'. It catches subtle bugs faster than manual review.",
+    days:[
+      {label:"Mon D8",title:"Thread Fundamentals",
+        theory:"Process vs Thread. Thread lifecycle (NEW→RUNNABLE→BLOCKED→WAITING→TERMINATED). Daemon threads. Thread class vs Runnable vs Callable.",
+        coding:"Spawn 5 threads printing 1–100 concurrently; observe interleaving. Use Thread.sleep() and join(). Name your threads.",
+        mock:'"What is the difference between implementing Runnable and extending Thread? Which do you prefer and why?"'},
+      {label:"Tue D9",title:"Synchronization & Deadlock",
+        theory:"synchronized keyword (method & block). Race conditions. Deadlock, livelock, starvation. Object-level vs class-level locks.",
+        coding:"Simulate bank transfer race condition without sync. Fix with synchronized. Then deliberately create a deadlock and fix it.",
+        mock:'"How do you prevent a deadlock? Write the resource ordering strategy in pseudocode."'},
+      {label:"Wed D10",title:"ExecutorService & CompletableFuture",
+        theory:"ExecutorService, ThreadPoolExecutor, Callable, Future. CompletableFuture chaining. Difference between submit() and execute().",
+        coding:"Build a parallel file-word-counter using ExecutorService. Aggregate Future results. Convert to CompletableFuture pipeline.",
+        mock:'"What is the difference between Future.get() and CompletableFuture.thenApply()?"'},
+      {label:"Thu D11",title:"Volatile, Atomic & ConcurrentHashMap",
+        theory:"volatile keyword semantics. Atomic classes (AtomicInteger, AtomicReference). java.util.concurrent package. ConcurrentHashMap internals.",
+        coding:"Increment shared counter: plain int vs synchronized vs AtomicInteger. Benchmark all 3. Use ConcurrentHashMap for caching.",
+        mock:'"When is volatile sufficient and when do you need AtomicInteger? What is the visibility guarantee?"'},
+      {label:"Fri D12",title:"Producer-Consumer Pattern",
+        theory:"Producer-Consumer problem. BlockingQueue (ArrayBlockingQueue, LinkedBlockingQueue). wait/notify vs Semaphore.",
+        coding:"Implement producer-consumer with ArrayBlockingQueue. Add multiple producers/consumers. Measure throughput.",
+        mock:'"Explain the producer-consumer problem. What happens if you use a non-blocking queue without synchronization?"'},
+      {label:"Sat D13",title:"Thread-Safe Singleton & Design Patterns",
+        theory:"Thread safety in Singleton. Double-checked locking. Initialization-on-demand holder. Thread-safe design patterns.",
+        coding:"Implement 3 Singleton variants: synchronized, DCL, holder. Write a thread-safe connection pool.",
+        mock:'"How do you make a Singleton thread-safe without full method synchronization overhead?"'},
+      {label:"Sun D14",title:"Project — Async Notification Layer",
+        theory:"Review all multithreading concepts. Design async patterns for real applications.",
+        coding:"SmartCampus: add multithreaded notification service (grade alerts, enrollment confirmations) using CompletableFuture + ThreadPool.",
+        mock:'"Walk me through the concurrency design in your SmartCampus project. What could go wrong at scale?"'},
+    ]
+  },
+  {
+    title:"JDBC + SQL Foundations",
+    tags:["tag-sql","tag-java"],tagLabels:["SQL","JDBC"],
+    aiTip:"Ask AI to generate 10 edge-case SQL queries for your schema — students with no courses, orphaned records. Test ALL of them.",
+    days:[
+      {label:"Mon D15",title:"RDBMS & Normalization",
+        theory:"RDBMS concepts: tables, primary/foreign keys, normalization (1NF, 2NF, 3NF, BCNF). ER diagrams. When to denormalize.",
+        coding:"Design full schema for SmartCampus (Students, Courses, Enrollments, Grades, Departments). Draw ER diagram.",
+        mock:'"What is normalization? Walk me through converting a flat table to 3NF with a real example."'},
+      {label:"Tue D16",title:"SQL — Queries & Aggregates",
+        theory:"SELECT, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT. Aggregate functions: COUNT, SUM, AVG, MIN, MAX. DISTINCT.",
+        coding:"Write 12 queries on SmartCampus DB: top 5 scorers, avg marks per dept, students enrolled in >3 courses, etc.",
+        mock:'"What is the difference between WHERE and HAVING? Can you use aggregates in WHERE?"'},
+      {label:"Wed D17",title:"JOINs & Subqueries",
+        theory:"INNER, LEFT, RIGHT, FULL OUTER, CROSS, SELF joins. Subqueries: correlated vs uncorrelated. EXISTS vs IN performance.",
+        coding:"Multi-table queries: students + courses + marks. Find students with no courses. Find courses with no students.",
+        mock:'"When would you use a subquery instead of a JOIN? Which performs better and why?"'},
+      {label:"Thu D18",title:"JDBC — Core API",
+        theory:"JDBC architecture: DriverManager, Connection, Statement, PreparedStatement, CallableStatement, ResultSet. SQL injection.",
+        coding:"Java CRUD app: full Create/Read/Update/Delete on Students table using PreparedStatement. Handle SQLExceptions.",
+        mock:'"Why use PreparedStatement over Statement? Demonstrate a SQL injection attack in code."'},
+      {label:"Fri D19",title:"Transactions & ACID",
+        theory:"ACID properties. Transaction lifecycle: begin, commit, rollback. Savepoints. Isolation levels and dirty/phantom reads.",
+        coding:"Simulate course enrollment transaction with rollback on capacity exceeded. Test all isolation levels in code.",
+        mock:'"Explain ACID. What happens if you don\'t use transactions in a course enrollment system?"'},
+      {label:"Sat D20",title:"Connection Pooling & Batch Operations",
+        theory:"Connection pooling (HikariCP). Batch inserts. Stored procedures. Performance tuning basics.",
+        coding:"Add HikariCP to SmartCampus. Batch-insert 10,000 records. Benchmark vs single inserts. Call a stored procedure.",
+        mock:'"What is connection pooling and why is it essential for production applications?"'},
+      {label:"Sun D21",title:"Project — DAO Persistence Layer",
+        theory:"DAO design pattern. Repository pattern. Separation of concerns in layered architecture.",
+        coding:"SmartCampus: implement full DAO layer (StudentDAO, CourseDAO, EnrollmentDAO) with MySQL. Update GitHub.",
+        mock:'"Explain the DAO pattern. Why separate data access from business logic? What does it make easier?"'},
+    ]
+  },
+  {
+    title:"Data Structures — Linear + Sorting",
+    tags:["tag-dsa"],tagLabels:["DSA I"],
+    aiTip:"After solving each LeetCode problem, paste your solution and ask 'what is the most optimized approach?' Understand the diff before moving on.",
+    days:[
+      {label:"Mon D22",title:"Arrays & Big-O Analysis",
+        theory:"Arrays in memory. Big-O notation: O(1), O(log n), O(n), O(n log n), O(n²). Time vs space trade-offs. Amortized analysis.",
+        coding:"Rotate array, find duplicates (O(n²) then O(n)), two-sum (brute force then hash map). Benchmark approaches.",
+        mock:'"What is the time complexity of searching in a sorted vs unsorted array? How would you improve both?"'},
+      {label:"Tue D23",title:"Linked Lists",
+        theory:"Singly, doubly, circular linked lists. Pointer manipulation. Memory layout vs arrays. When to prefer linked list.",
+        coding:"Reverse linked list (iterative + recursive). Detect cycle (Floyd's algorithm). Find middle node. Merge two sorted lists.",
+        mock:'"How does Floyd\'s cycle detection algorithm work? Prove it detects a cycle in O(n) time."'},
+      {label:"Wed D24",title:"Stacks & Queues",
+        theory:"Stack (LIFO), Queue (FIFO), Deque. Monotonic stack. Applications: expression parsing, BFS, call stack.",
+        coding:"Valid parentheses. Next greater element. Daily temperatures. Implement queue using 2 stacks. Min stack in O(1).",
+        mock:'"Design a stack that returns the minimum element in O(1) time and O(1) space."'},
+      {label:"Thu D25",title:"Sorting Algorithms",
+        theory:"Bubble, Selection, Insertion, Merge Sort, Quick Sort. Analysis: best/avg/worst cases. Stability. In-place vs extra space.",
+        coding:"Implement all 5 sorts from scratch. Benchmark on 10k, 100k elements. Visualize via console output.",
+        mock:'"Why is Merge Sort preferred over Quick Sort for linked lists? What about for nearly-sorted arrays?"'},
+      {label:"Fri D26",title:"Binary Search",
+        theory:"Binary search on sorted arrays. Lower bound, upper bound. Binary search on answer. Search in rotated sorted array.",
+        coding:"10 binary search problems: peak element, sqrt(x), first/last position, minimum in rotated array, find K closest.",
+        mock:'"What are the exact conditions for binary search to be applicable? Can you use it on unsorted data?"'},
+      {label:"Sat D27",title:"Hashing Deep Dive",
+        theory:"Hash functions, load factor, chaining vs open addressing, rehashing. Java HashMap internals. HashSet applications.",
+        coding:"Implement HashMap from scratch with chaining. Solve: group anagrams, top K frequent elements, longest consecutive sequence.",
+        mock:'"What is the amortized time complexity of HashMap.put()? What causes worst-case O(n)?"'},
+      {label:"Sun D28",title:"Timed Mock Contest",
+        theory:"Review: time complexity patterns, common tricks (two-pointer, sliding window), interview code style.",
+        coding:"3 LeetCode problems in 90 minutes under interview conditions. No hints. Use AI to review AFTER.",
+        mock:'"Tell me your problem-solving approach when you\'re completely stuck during an interview."'},
+    ]
+  },
+  {
+    title:"DSA — Trees, Graphs & Dynamic Programming",
+    tags:["tag-dsa"],tagLabels:["DSA II"],
+    aiTip:"Use Claude to generate graph problems with custom constraints — 500 nodes, max 3 edges per node. Custom problems beat memorising solutions.",
+    days:[
+      {label:"Mon D29",title:"Binary Trees",
+        theory:"Binary tree structure, traversals (inorder, preorder, postorder, level-order). Height, diameter, balanced check. Recursion patterns.",
+        coding:"Level-order (BFS), zigzag traversal, max depth, check balanced, diameter, lowest common ancestor.",
+        mock:'"What is the time complexity of inorder traversal? Implement it iteratively using a stack."'},
+      {label:"Tue D30",title:"BST & Heaps",
+        theory:"BST properties, insert/delete/search. AVL overview. Heap structure, heapify, PriorityQueue in Java.",
+        coding:"Validate BST, kth smallest, build min-heap from scratch, merge K sorted lists, find median from data stream.",
+        mock:'"What makes a valid BST? What property might break when you delete a node with two children?"'},
+      {label:"Wed D31",title:"Graph Traversals",
+        theory:"Graph representations (adjacency list/matrix). BFS, DFS, time/space complexity. Connected components. Cycle detection.",
+        coding:"BFS shortest path in unweighted graph. DFS connected components. Detect cycle in directed graph (topological DFS).",
+        mock:'"When would you choose BFS over DFS? Name two problems where each is clearly superior."'},
+      {label:"Thu D32",title:"Topological Sort & Dijkstra",
+        theory:"Topological ordering, Kahn's algorithm, DFS-based topo sort. Dijkstra's algorithm. Union-Find (DSU) with path compression.",
+        coding:"Course Schedule I & II (topo sort). Shortest path (Dijkstra). Number of provinces (DSU). Redundant Connection.",
+        mock:'"Explain Dijkstra\'s algorithm step by step. What is its time complexity with a binary heap?"'},
+      {label:"Fri D33",title:"Dynamic Programming I",
+        theory:"DP fundamentals: overlapping subproblems, optimal substructure. Memoization vs tabulation. State definition.",
+        coding:"Fibonacci (all 3 approaches), climbing stairs, coin change, 0/1 knapsack, longest common subsequence.",
+        mock:'"How do you identify if a problem can be solved with dynamic programming? Give your mental checklist."'},
+      {label:"Sat D34",title:"Greedy, Sliding Window, Two Pointer",
+        theory:"Greedy algorithm correctness proofs. Sliding window technique. Two pointer patterns. When greedy fails.",
+        coding:"Max subarray (Kadane's), minimum meeting rooms, longest substring without repeat, container with most water.",
+        mock:'"When does a greedy approach fail? Give a specific counterexample where DP is required instead."'},
+      {label:"Sun D35",title:"Timed Contest — 4 Problems",
+        theory:"Review all DSA patterns. Interview communication: thinking aloud, edge cases, complexity analysis.",
+        coding:"4 LeetCode problems in 2 hours (3 Medium + 1 Hard). Use AI to critique style and find missed edge cases.",
+        mock:'"Describe the most difficult coding problem you solved. Walk me through your exact thought process."'},
+    ]
+  },
+  {
+    title:"Python Mastery + Java Swing UI",
+    tags:["tag-python","tag-ui"],tagLabels:["Python","Swing"],
+    aiTip:"Use Copilot inside VS Code for Swing boilerplate. Focus mental energy on architecture decisions, not layout manager syntax.",
+    days:[
+      {label:"Mon D36",title:"Python Core — Syntax & Features",
+        theory:"Python vs Java: duck typing, GIL, generators, list comprehensions, decorators, context managers. PEP 8.",
+        coding:"Port Week 1 word counter to Python. Add generator-based file streaming. Write decorators for timing and logging.",
+        mock:'"What is Python\'s GIL? How does it affect multithreading? What is the alternative for parallelism?"'},
+      {label:"Tue D37",title:"Python Data Structures",
+        theory:"List, dict, set, tuple — internal implementations, time complexities. collections module: defaultdict, Counter, deque, namedtuple.",
+        coding:"Solve 5 DSA problems from Week 4 in Python. Compare approach and code length vs Java solutions.",
+        mock:'"Is Python\'s dict ordered? When did that change? Why does it matter in practice?"'},
+      {label:"Wed D38",title:"Python File I/O & Testing",
+        theory:"File I/O, modules, packages, pip, virtual environments. Unit testing with pytest. Test-driven development basics.",
+        coding:"CSV parser + data transformer for student grades. Write 10 pytest unit tests covering edge cases.",
+        mock:'"How do you manage dependencies in a Python project professionally? What is a virtual environment?"'},
+      {label:"Thu D39",title:"Pandas + Matplotlib Analytics",
+        theory:"Pandas DataFrame, Series, groupby, merge, pivot_table, data cleaning. Matplotlib plot types. Seaborn basics.",
+        coding:"Analyse SmartCampus grades dataset: top/bottom performers, dept averages, grade distribution. Export 3 charts.",
+        mock:'"How would you find and handle missing values in a large dataset? What are the trade-offs of each approach?"'},
+      {label:"Fri D40",title:"Java Swing — Forms & Events",
+        theory:"JFrame, JPanel, layout managers (BorderLayout, GridLayout, GridBagLayout). Event-driven programming, ActionListener.",
+        coding:"Build Swing login form wired to SmartCampus DB. Validate input client-side. Show JOptionPane error dialogs.",
+        mock:'"What is the Event Dispatch Thread (EDT) in Swing? What happens if you update UI from another thread?"'},
+      {label:"Sat D41",title:"Swing — JTable, MVC, Renderers",
+        theory:"JTable, TableModel, JTree, custom CellRenderers. MVC pattern applied to Swing desktop applications.",
+        coding:"Build student browser: JTable displaying JDBC query results with column sorting, row selection, search filter.",
+        mock:'"Describe the MVC pattern. How does it apply specifically to a Swing desktop application?"'},
+      {label:"Sun D42",title:"Project — Swing Dashboard",
+        theory:"Review Swing components. UI/UX principles for desktop apps. Accessibility basics.",
+        coding:"SmartCampus: full Swing dashboard with login, student browser, grade charts, enrollment management. Screenshot for README.",
+        mock:'"Demo your project UI. What 3 things would you improve with one more week of development time?"'},
+    ]
+  },
+  {
+    title:"Advanced DBMS + System Design",
+    tags:["tag-sql"],tagLabels:["DBMS","Design"],
+    aiTip:"Paste your system design description to Claude and ask 'what failure modes am I not handling?' This mirrors real senior engineer review.",
+    days:[
+      {label:"Mon D43",title:"Indexing & Query Optimization",
+        theory:"B-tree indexes, hash indexes, composite indexes, covering indexes. Query execution plans. EXPLAIN keyword. Index selectivity.",
+        coding:"Add indexes to SmartCampus DB. Run EXPLAIN on 5 slow queries. Compare execution times before/after indexing.",
+        mock:'"When can an index actually slow down a query? Give a concrete example with DML operations."'},
+      {label:"Tue D44",title:"Views, Triggers & Window Functions",
+        theory:"Views (simple vs materialized). Triggers (BEFORE/AFTER). Stored procedures. Window functions: ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD.",
+        coding:"Rank students with ROW_NUMBER partitioned by department. Create audit trigger on grade updates. Build grade summary view.",
+        mock:'"What is the difference between RANK() and DENSE_RANK()? Give an example where they differ."'},
+      {label:"Wed D45",title:"NoSQL & CAP Theorem",
+        theory:"NoSQL types: document (MongoDB), key-value (Redis), column (Cassandra), graph (Neo4j). CAP theorem. BASE vs ACID.",
+        coding:"Prototype with PyMongo: store student activity logs in MongoDB. Compare query speed vs MySQL equivalent.",
+        mock:'"How would you decide between SQL and NoSQL for a new project? What 5 questions would you ask?"'},
+      {label:"Thu D46",title:"System Design Fundamentals",
+        theory:"Scalability: vertical vs horizontal. Load balancing. Caching (Redis, CDN). Sharding. Replication. CAP in practice.",
+        coding:"Draw SmartCampus architecture at 1M users using draw.io or Excalidraw. Document bottlenecks and solutions.",
+        mock:'"Design a URL shortener system. Walk me through every component from URL input to redirect."'},
+      {label:"Fri D47",title:"REST APIs & Authentication",
+        theory:"HTTP methods (GET/POST/PUT/DELETE/PATCH). Status codes. JSON design. JWT vs session-based auth. OAuth 2.0 overview.",
+        coding:"Add REST API layer to SmartCampus: CRUD endpoints for students/courses + JWT auth using Java HttpServer or Spring Boot.",
+        mock:'"What is the difference between authentication and authorisation? How does JWT achieve statelessness?"'},
+      {label:"Sat D48",title:"Git Mastery & Code Quality",
+        theory:"Git branching strategies (Git Flow, trunk-based). Rebasing vs merging. Conventional commits. Code review best practices.",
+        coding:"Refactor SmartCampus: feature branches for each module. Conventional commit messages. Write a PR description.",
+        mock:'"What is git rebase and when would you use it over merge? What problems can rebase cause?"'},
+      {label:"Sun D49",title:"Soft Skills & STAR Method",
+        theory:"STAR method (Situation-Task-Action-Result). Salary negotiation. How recruiters read JDs. LinkedIn optimization.",
+        coding:"Write 3 polished STAR stories. Update LinkedIn with SmartCampus project and demo GIF. Update resume.",
+        mock:'"Tell me about yourself in under 2 minutes." — Practice out loud. Record and review. Repeat until smooth.'},
+    ]
+  },
+  {
+    title:"Final Sprint — Mock Interviews + Portfolio Polish",
+    tags:["tag-final"],tagLabels:["Final Sprint"],
+    aiTip:"Do full mock interviews with Claude: 'Act as a senior SDE interviewer. Ask me 5 technical questions then give brutal feedback.' Record yourself.",
+    days:[
+      {label:"D50–52",title:"Java & DSA Intensive Review",
+        theory:"Revise: Java concurrency patterns, SOLID principles, design patterns (Singleton, Factory, Observer, Strategy).",
+        coding:"2 LeetCode mediums per day under timed conditions. No hints, no IDE autocomplete. Write on paper first.",
+        mock:"Full 45-min simulated technical interview: DSA + Java deep questions. Do this with a peer or Claude."},
+      {label:"D53–55",title:"SQL & System Design Review",
+        theory:"Revise: SQL window functions, ACID properties, indexing strategies, system design patterns, scalability trade-offs.",
+        coding:"Write 5 complex SQL queries (window functions, CTEs, correlated subqueries). Explain execution plan out loud.",
+        mock:'"Design a notification service that handles 10 million users. Cover every failure scenario."'},
+      {label:"D56–57",title:"Portfolio Polish & Testing",
+        theory:"Code quality: clean code principles, code smells, refactoring. Documentation: JavaDocs, README, demo materials.",
+        coding:"Add JUnit 5 tests (80% coverage), JavaDocs on all public methods, demo video/GIF, architecture diagram to README.",
+        mock:'"Walk me through your SmartCampus project architecture in exactly 5 minutes." — Time yourself.'},
+      {label:"D58",title:"Company Research & Applications",
+        theory:"How to research a company for an interview. Culture fit signals. Questions to ask the interviewer.",
+        coding:"Tailor resume for 3 target companies. ATS keyword match. Submit applications with personalised cover notes.",
+        mock:'"Where do you see yourself in 3 years? Why this specific company over our competitors?"'},
+      {label:"D59",title:"Rest & Mental Rehearsal",
+        theory:"Mental rehearsal. Sleep 8 hours. Do NOT start any new topics. Review your own flashcards only.",
+        coding:"Light only: re-read your own SmartCampus code. Know every line. Prepare 3 things you are most proud of.",
+        mock:'"What is the hardest bug you\'ve debugged? Walk me through exactly how you found and fixed it."'},
+      {label:"D60",title:"🎯 PLACEMENT DAY",
+        theory:"Confidence. Breathe. STAR framing for behavioural questions. Listen fully before answering any question.",
+        coding:"— This is the day your 60 days of work pay off. You are ready. —",
+        mock:'"You\'ve got this, Aditya. 60 days of work speak louder than nerves. Go place yourself."'},
+    ]
+  }
+];
+
+const PROJECT_MILESTONES = [
+  {week:"Week 1",title:"OOP Foundation",desc:"Student, Course, Department classes with full inheritance hierarchy. Access modifiers, interfaces. GitHub repo initialized with Maven structure."},
+  {week:"Week 2",title:"Async Notification Layer",desc:"Multithreaded notification service for grade updates and enrollment confirmations. CompletableFuture pipeline with ThreadPoolExecutor."},
+  {week:"Week 3",title:"JDBC Persistence (DAO)",desc:"Full DAO pattern with StudentDAO, CourseDAO, EnrollmentDAO. MySQL schema, HikariCP connection pool, transactional enrollment logic."},
+  {week:"Week 5",title:"Python Analytics Module",desc:"Pandas-based grade trend analysis. Top/bottom performer reports. Matplotlib charts auto-exported as PDF. Integrated as Python subprocess."},
+  {week:"Week 6",title:"Swing GUI Dashboard",desc:"Full desktop interface: login screen wired to DB, JTable student browser with live search, grade chart panel, enrollment management."},
+  {week:"Week 7",title:"REST API + Auth Layer",desc:"HTTP endpoints for CRUD operations plus JWT authentication. Postman collection. System architecture diagram. README with demo GIF."},
+  {week:"Week 8",title:"Production-Ready Release",desc:"JUnit 5 tests (80%+ coverage), JavaDocs, optimized SQL indexes, GitHub Actions CI pipeline, polished README. LinkedIn & interview ready."},
+];
+
+const AI_TOOLS = [
+  {icon:"🤖",name:"Claude",use:"Theory companion & code review",tip:'"Explain [concept] like I\'m teaching it to a junior dev. Then quiz me 5 questions."'},
+  {icon:"⚡",name:"GitHub Copilot",use:"Boilerplate acceleration",tip:'"Generate the DAO interface for a Student entity with CRUD methods and HikariCP."'},
+  {icon:"🔍",name:"ChatGPT",use:"Mock interview partner",tip:'"Act as a senior Java SDE interviewer. Ask me 5 technical questions and score my answers."'},
+  {icon:"📊",name:"Gemini",use:"System design brainstorming",tip:'"Review this system design diagram description. What failure modes am I not handling?"'},
+  {icon:"🐛",name:"Copilot Chat",use:"Debugging assistant",tip:'"This code has a race condition. Find it and explain exactly why it causes data corruption."'},
+  {icon:"📝",name:"Notion AI",use:"Daily notes & STAR stories",tip:'"Polish this STAR story into a concise 90-second answer for a senior developer role."'},
+];
+
+const RECRUITER_TIPS = [
+  {num:"01",text:"<strong>Demo beats describe.</strong> Every candidate says 'Java, SQL, DSA'. Zero of them open a laptop and show something working. SmartCampus is your unfair advantage."},
+  {num:"02",text:"<strong>Own every line.</strong> Never put something on your resume you can't explain from first principles in 60 seconds. Recruiters test exactly this."},
+  {num:"03",text:"<strong>Commit history is a timeline.</strong> A GitHub repo with 60 days of consistent commits tells a story of discipline. That's rare. Recruiters notice."},
+  {num:"04",text:"<strong>Talk while you code.</strong> In a technical interview, silence is dangerous. Say 'I'm considering a hash map for O(1) lookup' — not just typing. Practice this daily."},
+  {num:"05",text:"<strong>AI fluency is a signal.</strong> Mentioning how you use Copilot or Claude in your workflow shows you work like a modern engineer, not a textbook student."},
+  {num:"06",text:"<strong>Ask one sharp question.</strong> End every interview with 'What does success look like for this role in the first 90 days?' It shows you're thinking about impact, not just getting hired."},
+];
+
+// ───── STATE ─────
+let completedDays = new Set(JSON.parse(localStorage.getItem('bc_days')||'[]'));
+let leetProblems = JSON.parse(localStorage.getItem('bc_leet')||'[]');
+let currentWeek = 1;
+
+function save(){
+  localStorage.setItem('bc_days',JSON.stringify([...completedDays]));
+  localStorage.setItem('bc_leet',JSON.stringify(leetProblems));
+}
+
+// ───── PROGRESS ─────
+function updateProgress(){
+  const done = completedDays.size;
+  const pct = Math.round((done/60)*100);
+  document.getElementById('prog-pct').textContent = pct+'%';
+  document.getElementById('progress-sub').textContent = done+' of 60 days completed';
+  document.getElementById('big-prog').style.width = pct+'%';
+  document.getElementById('nav-days-done').textContent = done;
+  document.getElementById('nav-prog').style.width = pct+'%';
+  document.getElementById('hero-done-stat').textContent = done;
+
+  // week dots
+  const dots = document.querySelectorAll('.week-dot');
+  dots.forEach((dot,i)=>{
+    const wStart = i*7+1;
+    const wEnd = Math.min(wStart+6,60);
+    let wDone = 0;
+    for(let d=wStart;d<=wEnd;d++) if(completedDays.has(d)) wDone++;
+    const total = wEnd-wStart+1;
+    dot.querySelector('.week-dot-check').textContent = wDone===total ? '✓ Complete' : wDone+'/'+total+' done';
+    dot.classList.toggle('done', wDone===total);
+  });
+}
+
+// ───── DAY TRACKER ─────
+function buildTracker(){
+  const container = document.getElementById('day-tracker');
+  const today = 1; // users can set their own today
+  for(let d=1;d<=60;d++){
+    const box = document.createElement('div');
+    box.className = 'day-box';
+    if(completedDays.has(d)) box.classList.add('completed');
+    box.textContent = d;
+    box.title = 'Day '+d;
+    box.onclick = ()=>toggleDay(d, box);
+    container.appendChild(box);
+  }
+}
+
+function toggleDay(d, box){
+  if(completedDays.has(d)){
+    completedDays.delete(d);
+    box.classList.remove('completed');
+    showToast('Day '+d+' unmarked');
+  } else {
+    completedDays.add(d);
+    box.classList.add('completed');
+    showToast('Day '+d+' marked complete! 🔥');
+  }
+  save();
+  updateProgress();
+  // update complete buttons
+  document.querySelectorAll('.day-complete-btn').forEach(btn=>{
+    const bd = parseInt(btn.dataset.day);
+    if(bd===d){
+      btn.textContent = completedDays.has(d) ? '✓ Completed' : 'Mark day complete';
+      btn.classList.toggle('done', completedDays.has(d));
+    }
+  });
+}
+
+// ───── WEEK DOTS ─────
+function buildWeekDots(){
+  const container = document.getElementById('week-dots');
+  const wNames = ['Java OOP','Concurrency','JDBC+SQL','DSA I','DSA II','Python+Swing','Adv DBMS','Final Sprint'];
+  for(let i=0;i<8;i++){
+    const dot = document.createElement('div');
+    dot.className = 'week-dot'+(i===0?' active-week':'');
+    dot.innerHTML = `<div class="week-dot-num">Week ${i+1}</div><div class="week-dot-label">${wNames[i]}</div><div class="week-dot-check">0/7 done</div>`;
+    dot.onclick = ()=>{ showWeek(i+1); document.getElementById('schedule').scrollIntoView({behavior:'smooth'}); };
+    container.appendChild(dot);
+  }
+}
+
+// ───── SCHEDULE ─────
+function buildSchedule(){
+  const tabs = document.getElementById('week-tabs');
+  const panels = document.getElementById('week-panels');
+
+  WEEKS.forEach((week,wi)=>{
+    // tab
+    const tab = document.createElement('button');
+    tab.className = 'wtab'+(wi===0?' active':'');
+    tab.textContent = 'Week '+(wi+1);
+    tab.onclick = ()=>showWeek(wi+1);
+    tabs.appendChild(tab);
+
+    // panel
+    const panel = document.createElement('div');
+    panel.className = 'week-panel'+(wi===0?' active':'');
+    panel.id = 'panel-'+(wi+1);
+
+    // header
+    let tagsHTML = week.tags.map((t,ti)=>`<span class="skill-tag ${t}">${week.tagLabels[ti]}</span>`).join('');
+    panel.innerHTML = `
+      <div class="week-header-card">
+        <div class="wh-left">
+          <div class="wh-eyebrow">Week ${wi+1} · Days ${wi*7+1}–${Math.min((wi+1)*7,60)}</div>
+          <div class="wh-title">${week.title}</div>
+        </div>
+        <div class="wh-right">${tagsHTML}</div>
+      </div>
+      <div class="ai-tip-bar">${week.aiTip}</div>
+      <div class="days-grid"></div>
+    `;
+
+    const grid = panel.querySelector('.days-grid');
+    week.days.forEach((day,di)=>{
+      const globalDay = wi*7+di+1;
+      const card = document.createElement('div');
+      card.className = 'day-card';
+      card.innerHTML = `
+        <div class="day-card-header" onclick="toggleCard(this.parentElement)">
+          <div class="day-label">${day.label}</div>
+          <div class="day-title">${day.title}</div>
+          <button class="day-expand-btn">+</button>
+        </div>
+        <div class="day-card-body">
+          <div class="block theory">
+            <div class="block-label">Theory</div>
+            <div class="block-content">${day.theory}</div>
+          </div>
+          <div class="block coding">
+            <div class="block-label">Coding</div>
+            <div class="block-content">${day.coding}</div>
+          </div>
+          <div class="block mock">
+            <div class="block-label">Mock Interview</div>
+            <div class="block-content">${day.mock}</div>
+          </div>
+        </div>
+        <div style="padding:0 18px 12px">
+          <button class="day-complete-btn ${completedDays.has(globalDay)?'done':''}" data-day="${globalDay}" onclick="toggleDayFromBtn(${globalDay},this)">
+            ${completedDays.has(globalDay)?'✓ Completed':'Mark day complete'}
+          </button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    panels.appendChild(panel);
+  });
+}
+
+function toggleCard(card){
+  card.classList.toggle('expanded');
+}
+
+function showWeek(n){
+  currentWeek = n;
+  document.querySelectorAll('.wtab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.week-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.week-dot').forEach((d,i)=>d.classList.toggle('active-week',i===n-1));
+}
+
+function toggleDayFromBtn(d, btn){
+  if(completedDays.has(d)){
+    completedDays.delete(d);
+    btn.textContent='Mark day complete';
+    btn.classList.remove('done');
+    showToast('Day '+d+' unmarked');
+  } else {
+    completedDays.add(d);
+    btn.textContent='✓ Completed';
+    btn.classList.add('done');
+    showToast('Day '+d+' complete! 🔥');
+  }
+  save();
+  updateProgress();
+  // sync tracker
+  const trackerBoxes = document.querySelectorAll('.day-box');
+  if(trackerBoxes[d-1]) trackerBoxes[d-1].classList.toggle('completed', completedDays.has(d));
+}
+
+// ───── PROJECT ─────
+function buildProject(){
+  const container = document.getElementById('milestones');
+  PROJECT_MILESTONES.forEach(m=>{
+    const row = document.createElement('div');
+    row.className = 'milestone';
+    row.innerHTML = `<div class="ms-week">${m.week}</div><div class="ms-content"><div class="ms-title">${m.title}</div><div class="ms-desc">${m.desc}</div></div>`;
+    container.appendChild(row);
+  });
+}
+
+// ───── LEETCODE ─────
+function buildLeetCode(){
+  renderProblems();
+  document.getElementById('leet-name').addEventListener('keydown',e=>{if(e.key==='Enter')addProblem()});
+}
+
+function addProblem(){
+  const name = document.getElementById('leet-name').value.trim();
+  const diff = document.getElementById('leet-diff').value;
+  if(!name) return;
+  leetProblems.unshift({name,diff,date:new Date().toLocaleDateString('en-IN')});
+  document.getElementById('leet-name').value='';
+  save();
+  renderProblems();
+  showToast('Problem logged: '+name);
+}
+
+function deleteProblem(i){
+  leetProblems.splice(i,1);
+  save();
+  renderProblems();
+}
+
+function renderProblems(){
+  const log = document.getElementById('leet-log');
+  const easy = leetProblems.filter(p=>p.diff==='Easy').length;
+  const med = leetProblems.filter(p=>p.diff==='Medium').length;
+  const hard = leetProblems.filter(p=>p.diff==='Hard').length;
+  document.getElementById('ct-easy').textContent=easy;
+  document.getElementById('ct-med').textContent=med;
+  document.getElementById('ct-hard').textContent=hard;
+
+  if(!leetProblems.length){log.innerHTML='<div class="leet-empty">No problems logged yet. Start solving!</div>';return;}
+  log.innerHTML = leetProblems.map((p,i)=>`
+    <div class="leet-item">
+      <span class="leet-item-name">${p.name} <span style="color:var(--muted2);font-size:0.65rem">${p.date||''}</span></span>
+      <span style="display:flex;align-items:center;gap:8px">
+        <span class="diff-badge diff-${p.diff}">${p.diff}</span>
+        <button class="leet-item-del" onclick="deleteProblem(${i})" title="Remove">×</button>
+      </span>
+    </div>
+  `).join('');
+}
+
+// ───── AI TOOLS ─────
+function buildTools(){
+  const grid = document.getElementById('tools-grid');
+  AI_TOOLS.forEach(t=>{
+    const card = document.createElement('div');
+    card.className='tool-card';
+    card.innerHTML=`<div class="tool-icon">${t.icon}</div><div class="tool-name">${t.name}</div><div class="tool-use">${t.use}</div><div class="tool-tip">${t.tip}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ───── TIPS ─────
+function buildTips(){
+  const grid = document.getElementById('tips-grid');
+  RECRUITER_TIPS.forEach(t=>{
+    const card=document.createElement('div');
+    card.className='tip-card';
+    card.innerHTML=`<div class="tip-num">— ${t.num}</div><div class="tip-text">${t.text}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ───── TOAST ─────
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),2500);
+}
+
+// ───── INIT ─────
+document.addEventListener('DOMContentLoaded',()=>{
+  buildWeekDots();
+  buildTracker();
+  buildSchedule();
+  buildProject();
+  buildLeetCode();
+  buildTools();
+  buildTips();
+  updateProgress();
+});
+</script>
+</body>
+</html>
