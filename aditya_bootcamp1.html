@@ -14,8 +14,8 @@
   --surface3:#1f1f28;
   --border:#2a2a38;
   --border2:#363648;
-  --accent:#f0a500;
-  --accent2:#e06c00;
+  --accent:#3b82f6;
+  --accent2:#1d4ed8;
   --java:#4fc3f7;
   --python:#a5d6a7;
   --sql:#ce93d8;
@@ -89,7 +89,7 @@ nav{
   border:1px solid var(--border);
   transition:all 0.3s;
 }
-.db-indicator.saving{color:var(--accent);border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.05)}
+.db-indicator.saving{color:var(--accent);border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.05)}
 .db-indicator.saved{color:var(--python);border-color:rgba(165,214,167,0.3);background:rgba(165,214,167,0.05)}
 .db-dot{
   width:6px;height:6px;border-radius:50%;
@@ -145,17 +145,17 @@ nav{
 .hero-grid-bg{
   position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(240,165,0,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(240,165,0,0.03) 1px,transparent 1px);
+    linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);
   background-size:40px 40px;
   mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 40%,transparent 100%);
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
   font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;
-  color:var(--accent);border:1px solid rgba(240,165,0,0.3);
+  color:var(--accent);border:1px solid rgba(59,130,246,0.3);
   padding:6px 14px;border-radius:20px;margin-bottom:2rem;
-  background:rgba(240,165,0,0.05);
+  background:rgba(59,130,246,0.05);
 }
 .hero-eyebrow::before{content:'◈';font-size:0.8rem}
 h1{
@@ -207,7 +207,7 @@ h1 .line2{
   text-decoration:none;display:inline-block;
   transition:all 0.2s;
 }
-.btn-primary:hover{background:#ffb800;transform:translateY(-2px)}
+.btn-primary:hover{background:#60a5fa;transform:translateY(-2px)}
 .btn-secondary{
   background:transparent;color:var(--text);
   font-family:'Syne',sans-serif;font-weight:600;
@@ -262,7 +262,7 @@ h1 .line2{
   background:var(--surface2);
 }
 .week-dot:hover{border-color:var(--border2);background:var(--surface3)}
-.week-dot.active-week{border-color:var(--accent);background:rgba(240,165,0,0.08)}
+.week-dot.active-week{border-color:var(--accent);background:rgba(59,130,246,0.08)}
 .week-dot.done{border-color:var(--python);background:rgba(165,214,167,0.06)}
 .week-dot-num{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
 .week-dot-label{font-size:0.65rem;font-family:'Syne',sans-serif;font-weight:600;margin-top:3px;color:var(--text)}
@@ -278,9 +278,9 @@ h1 .line2{
   font-size:0.52rem;color:var(--muted2);
   position:relative;
 }
-.day-box:hover{border-color:var(--accent);background:rgba(240,165,0,0.1);color:var(--accent)}
+.day-box:hover{border-color:var(--accent);background:rgba(59,130,246,0.1);color:var(--accent)}
 .day-box.completed{background:rgba(165,214,167,0.2);border-color:var(--python);color:var(--python)}
-.day-box.today{border-color:var(--accent);background:rgba(240,165,0,0.15);color:var(--accent);font-weight:700}
+.day-box.today{border-color:var(--accent);background:rgba(59,130,246,0.15);color:var(--accent);font-weight:700}
 .day-box.today::after{
   content:'';position:absolute;top:-4px;right:-4px;
   width:6px;height:6px;border-radius:50%;
@@ -317,13 +317,13 @@ h1 .line2{
 .tag-python{background:rgba(165,214,167,0.12);color:var(--python);border:1px solid rgba(165,214,167,0.25)}
 .tag-sql{background:rgba(206,147,216,0.12);color:var(--sql);border:1px solid rgba(206,147,216,0.25)}
 .tag-dsa{background:rgba(255,138,101,0.12);color:var(--dsa);border:1px solid rgba(255,138,101,0.25)}
-.tag-ui{background:rgba(240,165,0,0.12);color:var(--accent);border:1px solid rgba(240,165,0,0.25)}
+.tag-ui{background:rgba(59,130,246,0.12);color:var(--accent);border:1px solid rgba(59,130,246,0.25)}
 .tag-final{background:rgba(244,143,177,0.12);color:var(--mock);border:1px solid rgba(244,143,177,0.25)}
 .ai-tip-bar{
-  background:rgba(240,165,0,0.06);border:1px solid rgba(240,165,0,0.2);
+  background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);
   border-radius:8px;padding:12px 16px;margin-bottom:1.5rem;
   display:flex;align-items:flex-start;gap:10px;
-  font-size:0.73rem;color:rgba(240,165,0,0.9);line-height:1.6;
+  font-size:0.73rem;color:rgba(59,130,246,0.9);line-height:1.6;
 }
 .ai-tip-bar::before{content:'◆ AI WORKFLOW:';font-weight:700;white-space:nowrap;margin-right:4px}
 .days-grid{display:flex;flex-direction:column;gap:10px}
@@ -394,13 +394,13 @@ h1 .line2{
   border-radius:16px;overflow:hidden;
 }
 .project-card-header{
-  background:linear-gradient(135deg,rgba(240,165,0,0.12),rgba(224,108,0,0.08));
+  background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(29,78,216,0.08));
   border-bottom:1px solid var(--border);
   padding:1.5rem;display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap;
 }
 .project-icon{
   width:52px;height:52px;border-radius:12px;
-  background:rgba(240,165,0,0.15);border:1px solid rgba(240,165,0,0.3);
+  background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);
   display:flex;align-items:center;justify-content:center;
   font-size:1.4rem;flex-shrink:0;
 }
@@ -542,7 +542,7 @@ footer a{color:var(--accent);text-decoration:none}
   font-family:'Syne',sans-serif;font-weight:700;font-size:0.73rem;
   cursor:pointer;transition:all 0.2s;white-space:nowrap;
 }
-.btn-add:hover{background:#ffb800}
+.btn-add:hover{background:#60a5fa}
 .leet-log{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
 .leet-item{
   display:flex;justify-content:space-between;align-items:center;
@@ -555,7 +555,7 @@ footer a{color:var(--accent);text-decoration:none}
   font-family:'Syne',sans-serif;font-weight:600;flex-shrink:0;
 }
 .diff-Easy{background:rgba(165,214,167,0.15);color:var(--python)}
-.diff-Medium{background:rgba(240,165,0,0.15);color:var(--accent)}
+.diff-Medium{background:rgba(59,130,246,0.15);color:var(--accent)}
 .diff-Hard{background:rgba(244,143,177,0.15);color:var(--mock)}
 .leet-item-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:0.9rem;padding:0 4px;flex-shrink:0}
 .leet-item-del:hover{color:var(--mock)}
@@ -732,7 +732,7 @@ footer a{color:var(--accent);text-decoration:none}
 
   <div style="font-size:0.68rem;color:var(--muted);margin-bottom:10px;display:flex;gap:16px;flex-wrap:wrap">
     <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:rgba(165,214,167,0.2);border:1px solid var(--python);display:inline-block"></span>Completed</span>
-    <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:rgba(240,165,0,0.15);border:1px solid var(--accent);display:inline-block"></span>Today</span>
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:rgba(59,130,246,0.15);border:1px solid var(--accent);display:inline-block"></span>Today</span>
     <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);display:inline-block"></span>Upcoming</span>
   </div>
   <div class="day-tracker" id="day-tracker"></div>
