@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncBoard — Real-time Collaborative Tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — Warm editorial / utility
+═══════════════════════════════════════════ */
+:root {
+  --cream: #f5f0e8;
+  --cream2: #ede7d9;
+  --ink: #1a1713;
+  --ink2: #3d3830;
+  --ink3: #7a736a;
+  --accent: #c84b2f;
+  --accent2: #e8763a;
+  --green: #2d6a4f;
+  --green-bg: #d8f3dc;
+  --blue: #1d4e89;
+  --blue-bg: #dbeafe;
+  --amber: #92400e;
+  --amber-bg: #fef3c7;
+  --border: rgba(26,23,19,0.12);
+  --border2: rgba(26,23,19,0.06);
+  --shadow: 0 2px 16px rgba(26,23,19,0.08);
+  --shadow-lg: 0 8px 40px rgba(26,23,19,0.14);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ═══ HEADER ═══ */
+header {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid var(--accent);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  gap: 16px;
+}
+.logo {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.logo h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.logo .tagline {
+  font-size: 11px;
+  color: rgba(245,240,232,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sync-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(245,240,232,0.7);
+  background: rgba(255,255,255,0.06);
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+.sync-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #6ee7b7;
+  animation: pulse-green 2s infinite;
+  flex-shrink: 0;
+}
+.sync-dot.offline { background: #fca5a5; animation: none; }
+.sync-dot.syncing { background: var(--accent2); animation: pulse-amber 0.6s infinite; }
+@keyframes pulse-green { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+@keyframes pulse-amber { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+.online-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(245,240,232,0.7);
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+}
+.online-count span { font-weight: 600; color: #6ee7b7; }
+
+/* ═══ SETUP SCREEN ═══ */
+#setupScreen {
+  min-height: calc(100vh - 62px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.setup-card {
+  background: white;
+  border-radius: 20px;
+  padding: 48px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.setup-card .icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+.setup-card h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.setup-card p {
+  font-size: 14px;
+  color: var(--ink3);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+.setup-form { display: flex; flex-direction: column; gap: 12px; }
+.setup-form input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--cream);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.setup-form input:focus { border-color: var(--accent); background: white; }
+.setup-form input::placeholder { color: var(--ink3); }
+.btn-primary {
+  padding: 13px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  width: 100%;
+}
+.btn-primary:hover { background: #b03d23; }
+.btn-primary:active { transform: scale(0.98); }
+.divider { display: flex; align-items: center; gap: 12px; color: var(--ink3); font-size: 12px; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.btn-secondary {
+  padding: 13px 24px;
+  background: transparent;
+  color: var(--ink2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.btn-secondary:hover { border-color: var(--ink2); background: var(--cream2); }
+.firebase-note {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: var(--amber-bg);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--amber);
+  text-align: left;
+  line-height: 1.6;
+}
+.firebase-note strong { display: block; margin-bottom: 4px; }
+
+/* ═══ MAIN APP ═══ */
+#appScreen { display: none; }
+
+.app-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  min-height: calc(100vh - 62px);
+}
+
+/* ═══ SIDEBAR ═══ */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sidebar-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+.sidebar-card h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink3);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+/* Add task form */
+.add-task-form { display: flex; flex-direction: column; gap: 10px; }
+.add-task-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 72px;
+  transition: border-color 0.2s;
+}
+.add-task-form textarea:focus { border-color: var(--accent); background: white; }
+.add-task-form textarea::placeholder { color: var(--ink3); }
+.add-task-form select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--cream);
+  outline: none;
+  cursor: pointer;
+}
+.add-task-form select:focus { border-color: var(--accent); }
+.add-task-form .btn-add {
+  padding: 10px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.add-task-form .btn-add:hover { background: #b03d23; }
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.stat-item {
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.stat-item .num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+}
+.stat-item .lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink3);
+  margin-top: 4px;
+}
+.stat-item.accent .num { color: var(--accent); }
+.stat-item.green .num { color: var(--green); }
+
+/* Active users */
+.user-list { display: flex; flex-direction: column; gap: 6px; }
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.user-item:hover { background: var(--cream); }
+.user-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+.user-info { min-width: 0; }
+.user-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-status { font-size: 11px; color: var(--ink3); }
+.me-tag { font-size: 10px; background: var(--cream2); color: var(--ink3); padding: 1px 6px; border-radius: 100px; margin-left: 4px; }
+
+/* Activity feed */
+.activity-list { display: flex; flex-direction: column; gap: 0; max-height: 200px; overflow-y: auto; }
+.activity-list::-webkit-scrollbar { width: 3px; }
+.activity-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.activity-item {
+  display: flex;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border2);
+  align-items: flex-start;
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink3);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.activity-dot.add { background: var(--green); }
+.activity-dot.done { background: var(--blue); }
+.activity-dot.delete { background: var(--accent); }
+.activity-text { font-size: 12px; color: var(--ink3); line-height: 1.4; }
+.activity-text strong { color: var(--ink2); font-weight: 500; }
+.activity-time { font-size: 10px; color: var(--ink3); margin-left: auto; flex-shrink: 0; padding-top: 2px; }
+
+/* ═══ MAIN CONTENT ═══ */
+.main-content { display: flex; flex-direction: column; gap: 20px; }
+
+/* Board header */
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.board-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.board-title h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-weight: 400;
+}
+.board-title .room-id {
+  font-size: 12px;
+  color: var(--ink3);
+  background: var(--cream2);
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-family: monospace;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.board-title .room-id:hover { border-color: var(--accent); color: var(--accent); }
+.filter-tabs {
+  display: flex;
+  gap: 4px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+}
+.filter-tab {
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: 'Geist', sans-serif;
+  color: var(--ink3);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.filter-tab.active {
+  background: var(--ink);
+  color: white;
+}
+.filter-tab:hover:not(.active) { background: var(--cream); color: var(--ink); }
+
+/* Columns */
+.board-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.column {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.column-header {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border2);
+}
+.column-header .col-title {
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.col-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.col-dot.todo { background: var(--amber2, #f59e0b); }
+.col-dot.inprogress { background: var(--blue); }
+.col-dot.done { background: var(--green); }
+.col-count {
+  font-size: 11px;
+  background: var(--cream2);
+  color: var(--ink3);
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+.task-list {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 80px;
+}
+.empty-col {
+  text-align: center;
+  color: var(--ink3);
+  font-size: 12px;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* Task card */
+.task-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  animation: slideIn 0.25s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.task-card:hover {
+  border-color: rgba(26,23,19,0.22);
+  box-shadow: 0 2px 12px rgba(26,23,19,0.08);
+  transform: translateY(-1px);
+}
+.task-card.priority-high { border-left: 3px solid var(--accent); }
+.task-card.priority-medium { border-left: 3px solid #f59e0b; }
+.task-card.priority-low { border-left: 3px solid var(--green); }
+.task-card.done-card { opacity: 0.65; }
+.task-card.done-card .task-text { text-decoration: line-through; }
+
+.task-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.task-text { font-size: 13px; color: var(--ink); line-height: 1.45; flex: 1; }
+.task-actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
+.task-card:hover .task-actions { opacity: 1; }
+.task-btn {
+  width: 26px; height: 26px;
+  border-radius: 5px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.task-btn:hover { background: var(--cream2); }
+.task-btn.danger:hover { background: #fee2e2; }
+
+.task-meta { display: flex; align-items: center; justify-content: space-between; }
+.task-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+.tag.high { background: #fee2e2; color: #991b1b; }
+.tag.medium { background: var(--amber-bg); color: var(--amber); }
+.tag.low { background: var(--green-bg); color: #1b4332; }
+.tag.cat { background: var(--blue-bg); color: #1e3a5f; }
+.task-author { font-size: 10px; color: var(--ink3); display: flex; align-items: center; gap: 4px; }
+.author-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  color: white;
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 3px;
+  background: var(--cream2);
+  border-radius: 3px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Toast */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+  pointer-events: none;
+}
+.toast {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.25s ease, toastOut 0.25s ease 2.5s forwards;
+  pointer-events: auto;
+  border-left: 3px solid var(--accent);
+  max-width: 320px;
+}
+.toast.success { border-left-color: #6ee7b7; }
+.toast.info { border-left-color: #93c5fd; }
+@keyframes toastIn { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes toastOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(8px); } }
+
+/* Config modal */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(26,23,19,0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  background: white;
+  border-radius: 20px;
+  padding: 36px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+.modal h3 { font-family: 'Instrument Serif', serif; font-size: 24px; font-weight: 400; margin-bottom: 8px; }
+.modal p { font-size: 13px; color: var(--ink3); margin-bottom: 20px; line-height: 1.6; }
+.modal label { font-size: 12px; font-weight: 600; color: var(--ink2); display: block; margin-bottom: 6px; }
+.modal input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Geist', monospace;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--cream);
+  outline: none;
+  margin-bottom: 14px;
+}
+.modal input:focus { border-color: var(--accent); }
+.modal-btns { display: flex; gap: 10px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar { display: grid; grid-template-columns: 1fr 1fr; }
+  .board-columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .app-layout { padding: 16px; }
+  .sidebar { grid-template-columns: 1fr; }
+  .board-header { flex-direction: column; align-items: flex-start; }
+  .setup-card { padding: 28px 24px; }
+  .header-inner { gap: 8px; }
+  .tagline { display: none; }
+  .online-count { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <h1>SyncBoard</h1>
+      <span class="tagline">Real-time</span>
+    </div>
+    <div class="header-right">
+      <div class="online-count">👥 <span id="onlineCount">1</span> online</div>
+      <div class="sync-indicator">
+        <div class="sync-dot" id="syncDot"></div>
+        <span id="syncLabel">Connected</span>
+      </div>
+      <button onclick="showConfigModal()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(245,240,232,0.8);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:'Geist',sans-serif;font-size:12px;">⚙ Config</button>
+    </div>
+  </div>
+</header>
+
+<!-- SETUP SCREEN -->
+<div id="setupScreen">
+  <div class="setup-card">
+    <span class="icon">⚡</span>
+    <h2>Welcome to SyncBoard</h2>
+    <p>A real-time collaborative task board. Every change syncs instantly across all connected devices via Firebase.</p>
+
+    <div class="setup-form">
+      <input type="text" id="setupName" placeholder="Your name (e.g. Priya)" maxlength="24">
+      <input type="text" id="setupRoom" placeholder="Room code (e.g. team-alpha)" maxlength="32">
+      <button class="btn-primary" onclick="joinRoom()">Join or Create Room →</button>
+      <div class="divider">or</div>
+      <button class="btn-secondary" onclick="joinDemo()">🎯 Try with Demo Data</button>
+    </div>
+
+    <div class="firebase-note">
+      <strong>🔥 Firebase Setup Required for Full Sync</strong>
+      This app uses Firebase Realtime Database. Click "Config" after joining to enter your Firebase credentials, or use demo mode to explore the UI locally.
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appScreen">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Add Task -->
+      <div class="sidebar-card">
+        <h3>+ New Task</h3>
+        <div class="add-task-form">
+          <textarea id="newTaskText" placeholder="Describe the task…" rows="3"></textarea>
+          <select id="newTaskPriority">
+            <option value="medium">🟡 Medium priority</option>
+            <option value="high">🔴 High priority</option>
+            <option value="low">🟢 Low priority</option>
+          </select>
+          <select id="newTaskCategory">
+            <option value="general">📋 General</option>
+            <option value="design">🎨 Design</option>
+            <option value="dev">💻 Development</option>
+            <option value="review">🔍 Review</option>
+            <option value="research">🔬 Research</option>
+          </select>
+          <button class="btn-add" onclick="addTask()">
+            <span>+</span> Add Task
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="sidebar-card">
+        <h3>Board Stats</h3>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="num" id="statTotal">0</div><div class="lbl">Total</div></div>
+          <div class="stat-item accent"><div class="num" id="statTodo">0</div><div class="lbl">To Do</div></div>
+          <div class="stat-item"><div class="num" id="statProgress">0</div><div class="lbl">In Progress</div></div>
+          <div class="stat-item green"><div class="num" id="statDone">0</div><div class="lbl">Done</div></div>
+        </div>
+        <div class="progress-bar" style="margin-top:14px;">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:6px;text-align:right;" id="progressLabel">0% complete</div>
+      </div>
+
+      <!-- Active Users -->
+      <div class="sidebar-card">
+        <h3>Active Users</h3>
+        <div class="user-list" id="userList">
+          <div style="font-size:12px;color:var(--ink3);font-style:italic;">Waiting for users…</div>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="sidebar-card">
+        <h3>Live Activity</h3>
+        <div class="activity-list" id="activityList">
+          <div style="font-size:12px;color:var(--ink3);font-style:italic;padding:8px 0;">No activity yet.</div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN BOARD -->
+    <main class="main-content">
+      <div class="board-header">
+        <div class="board-title">
+          <h2>Task Board</h2>
+          <span class="room-id" id="roomIdLabel" onclick="copyRoomId()" title="Click to copy room ID">—</span>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setFilter('all', this)">All</button>
+          <button class="filter-tab" onclick="setFilter('high', this)">🔴 High</button>
+          <button class="filter-tab" onclick="setFilter('medium', this)">🟡 Medium</button>
+          <button class="filter-tab" onclick="setFilter('low', this)">🟢 Low</button>
+        </div>
+      </div>
+
+      <div class="board-columns">
+        <div class="column">
+          <div class="column-header">
+            <div class="col-title"><div class="col-dot todo"></div>To Do</div>
+            <span class="col-count" id="countTodo">0</span>
+          </div>
+          <div class="task-list" id="colTodo"></div>
+        </div>
+        <div class="column">
+          <div class="column-header">
+            <div class="col-title"><div class="col-dot inprogress"></div>In Progress</div>
+            <span class="col-count" id="countProgress">0</span>
+          </div>
+          <div class="task-list" id="colProgress"></div>
+        </div>
+        <div class="column">
+          <div class="column-header">
+            <div class="col-title"><div class="col-dot done"></div>Done</div>
+            <span class="col-count" id="countDone">0</span>
+          </div>
+          <div class="task-list" id="colDone"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Config Modal -->
+<div class="modal-bg" id="configModal" style="display:none;">
+  <div class="modal">
+    <h3>Firebase Configuration</h3>
+    <p>Enter your Firebase project credentials to enable real-time sync across devices. Get these from your Firebase Console → Project Settings → Web App.</p>
+    <label>API Key</label>
+    <input type="text" id="cfgApiKey" placeholder="AIzaSy…">
+    <label>Auth Domain</label>
+    <input type="text" id="cfgAuthDomain" placeholder="your-project.firebaseapp.com">
+    <label>Database URL</label>
+    <input type="text" id="cfgDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com">
+    <label>Project ID</label>
+    <input type="text" id="cfgProjectId" placeholder="your-project-id">
+    <div class="modal-btns">
+      <button class="btn-primary" style="flex:1;" onclick="saveFirebaseConfig()">Save & Reconnect</button>
+      <button class="btn-secondary" style="flex:0 0 auto;width:auto;padding:13px 20px;" onclick="hideConfigModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+var state = {
+  userName: '',
+  roomId: '',
+  userId: '',
+  tasks: {},
+  users: {},
+  activity: [],
+  filter: 'all',
+  firebaseReady: false,
+  db: null,
+  tasksRef: null,
+  usersRef: null,
+  activityRef: null,
+  presenceRef: null,
+  isDemoMode: false
+};
+
+var AVATAR_COLORS = ['#c84b2f','#1d4e89','#2d6a4f','#7c3aed','#b45309','#0891b2','#be185d','#065f46'];
+function avatarColor(name) {
+  var h = 0; for(var i=0;i<name.length;i++) h = name.charCodeAt(i) + h * 31;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+function initials(name) { return name.split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2); }
+function uid() { return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+function timeAgo(ts) {
+  var d = Date.now() - ts, s = Math.floor(d/1000);
+  if(s < 60) return 'just now';
+  if(s < 3600) return Math.floor(s/60) + 'm ago';
+  return Math.floor(s/3600) + 'h ago';
+}
+
+// ═══════════════════════════════════════════
+//  SETUP
+// ═══════════════════════════════════════════
+function joinRoom() {
+  var name = document.getElementById('setupName').value.trim();
+  var room = document.getElementById('setupRoom').value.trim().replace(/\s+/g,'-').toLowerCase();
+  if(!name) { showToast('Enter your name first', 'error'); return; }
+  if(!room) room = 'room-' + Math.random().toString(36).slice(2,7);
+  state.userName = name;
+  state.roomId = room;
+  state.userId = uid();
+  showApp();
+  initFirebase();
+}
+
+function joinDemo() {
+  state.userName = 'Demo User';
+  state.roomId = 'demo-room';
+  state.userId = uid();
+  state.isDemoMode = true;
+  showApp();
+  loadDemoData();
+}
+
+function showApp() {
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('roomIdLabel').textContent = '# ' + state.roomId;
+}
+
+// ═══════════════════════════════════════════
+//  FIREBASE
+// ═══════════════════════════════════════════
+var savedConfig = null;
+try { savedConfig = JSON.parse(localStorage.getItem('syncboard_config') || 'null'); } catch(e){}
+
+function initFirebase(config) {
+  config = config || savedConfig;
+  if(!config || !config.apiKey) {
+    setSyncStatus('demo', 'Local Only');
+    return;
+  }
+  try {
+    // Tear down existing app if any
+    if(firebase.apps.length) {
+      firebase.apps.forEach(function(app){ try{app.delete();}catch(e){} });
+    }
+    firebase.initializeApp(config);
+    state.db = firebase.database();
+    state.firebaseReady = true;
+    setSyncStatus('syncing', 'Connecting…');
+
+    var root = 'boards/' + state.roomId;
+    state.tasksRef = state.db.ref(root + '/tasks');
+    state.usersRef = state.db.ref(root + '/users');
+    state.activityRef = state.db.ref(root + '/activity');
+    state.presenceRef = state.db.ref(root + '/users/' + state.userId);
+
+    // Presence
+    var me = { name: state.userName, color: avatarColor(state.userName), ts: Date.now() };
+    state.presenceRef.set(me);
+    state.presenceRef.onDisconnect().remove();
+
+    // Listeners
+    state.tasksRef.on('value', function(snap) {
+      state.tasks = snap.val() || {};
+      renderBoard();
+      setSyncStatus('live', 'Live Sync');
+    });
+    state.usersRef.on('value', function(snap) {
+      state.users = snap.val() || {};
+      renderUsers();
+      document.getElementById('onlineCount').textContent = Object.keys(state.users).length;
+    });
+    state.activityRef.limitToLast(20).on('value', function(snap) {
+      var raw = snap.val() || {};
+      state.activity = Object.values(raw).sort((a,b)=>b.ts-a.ts).slice(0,12);
+      renderActivity();
+    });
+
+    state.db.ref('.info/connected').on('value', function(snap) {
+      if(snap.val()) setSyncStatus('live','Live Sync');
+      else setSyncStatus('offline','Reconnecting…');
+    });
+
+    localStorage.setItem('syncboard_config', JSON.stringify(config));
+    showToast('🔥 Firebase connected!', 'success');
+  } catch(e) {
+    setSyncStatus('demo','Config Error');
+    showToast('Firebase error: ' + e.message, 'error');
+  }
+}
+
+function setSyncStatus(type, label) {
+  var dot = document.getElementById('syncDot');
+  var lbl = document.getElementById('syncLabel');
+  dot.className = 'sync-dot';
+  if(type==='live') { /* default green pulse */ }
+  else if(type==='syncing') dot.classList.add('syncing');
+  else if(type==='offline') dot.classList.add('offline');
+  else dot.classList.add('offline');
+  lbl.textContent = label;
+}
+
+// ═══════════════════════════════════════════
+//  TASKS CRUD
+// ═══════════════════════════════════════════
+function addTask() {
+  var text = document.getElementById('newTaskText').value.trim();
+  if(!text) { showToast('Write a task first!'); return; }
+  var task = {
+    id: uid(),
+    text: text,
+    status: 'todo',
+    priority: document.getElementById('newTaskPriority').value,
+    category: document.getElementById('newTaskCategory').value,
+    author: state.userName,
+    authorColor: avatarColor(state.userName),
+    ts: Date.now()
+  };
+  document.getElementById('newTaskText').value = '';
+
+  if(state.firebaseReady && state.tasksRef) {
+    setSyncStatus('syncing','Saving…');
+    state.tasksRef.child(task.id).set(task, function(err){
+      if(!err) {
+        logActivity('add', state.userName + ' added "' + text.slice(0,30) + (text.length>30?'…':'') + '"');
+        showToast('Task added ✓', 'success');
+      } else showToast('Error: ' + err.message, 'error');
+    });
+  } else {
+    state.tasks[task.id] = task;
+    logActivity('add', state.userName + ' added "' + text.slice(0,30) + '"');
+    renderBoard();
+    showToast('Task added (local) ✓', 'success');
+  }
+}
+
+function moveTask(id, status) {
+  var task = state.tasks[id];
+  if(!task || task.status === status) return;
+  var oldStatus = task.status;
+  task.status = status;
+  var labels = {todo:'To Do', inprogress:'In Progress', done:'Done'};
+  var msg = state.userName + ' moved "' + task.text.slice(0,25) + '…" → ' + labels[status];
+
+  if(state.firebaseReady && state.tasksRef) {
+    state.tasksRef.child(id).update({status: status}, function(err){
+      if(!err) logActivity(status==='done'?'done':'add', msg);
+    });
+  } else {
+    state.tasks[id].status = status;
+    logActivity(status==='done'?'done':'add', msg);
+    renderBoard();
+  }
+}
+
+function deleteTask(id) {
+  var task = state.tasks[id];
+  if(!task) return;
+  var msg = state.userName + ' removed "' + task.text.slice(0,25) + '…"';
+  if(state.firebaseReady && state.tasksRef) {
+    state.tasksRef.child(id).remove(function(err){
+      if(!err) logActivity('delete', msg);
+    });
+  } else {
+    delete state.tasks[id];
+    logActivity('delete', msg);
+    renderBoard();
+  }
+  showToast('Task deleted');
+}
+
+function logActivity(type, text) {
+  var entry = { type: type, text: text, ts: Date.now() };
+  if(state.firebaseReady && state.activityRef) {
+    state.activityRef.push(entry);
+  } else {
+    state.activity.unshift(entry);
+    if(state.activity.length > 12) state.activity.pop();
+    renderActivity();
+  }
+}
+
+// ═══════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════
+function renderBoard() {
+  var all = Object.values(state.tasks);
+  if(state.filter !== 'all') all = all.filter(t=>t.priority===state.filter);
+
+  var cols = {todo:[], inprogress:[], done:[]};
+  all.forEach(function(t){ if(cols[t.status]) cols[t.status].push(t); });
+  Object.keys(cols).forEach(function(s){ cols[s].sort((a,b)=>b.ts-a.ts); });
+
+  renderColumn('colTodo', 'countTodo', cols.todo);
+  renderColumn('colProgress', 'countProgress', cols.inprogress);
+  renderColumn('colDone', 'countDone', cols.done);
+
+  // Stats (always all tasks, ignore filter)
+  var allTasks = Object.values(state.tasks);
+  var total = allTasks.length;
+  var todo = allTasks.filter(t=>t.status==='todo').length;
+  var prog = allTasks.filter(t=>t.status==='inprogress').length;
+  var done = allTasks.filter(t=>t.status==='done').length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statTodo').textContent = todo;
+  document.getElementById('statProgress').textContent = prog;
+  document.getElementById('statDone').textContent = done;
+  var pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '% complete';
+}
+
+function renderColumn(colId, countId, tasks) {
+  var el = document.getElementById(colId);
+  document.getElementById(countId).textContent = tasks.length;
+  if(!tasks.length) {
+    el.innerHTML = '<div class="empty-col">Nothing here yet</div>';
+    return;
+  }
+  el.innerHTML = '';
+  tasks.forEach(function(t){ el.appendChild(makeTaskCard(t)); });
+}
+
+function makeTaskCard(t) {
+  var div = document.createElement('div');
+  div.className = 'task-card priority-' + t.priority + (t.status==='done'?' done-card':'');
+
+  var nextStatus = {todo:'inprogress', inprogress:'done', done:'todo'};
+  var nextLabel = {todo:'▶ Start', inprogress:'✓ Done', done:'↩ Reopen'};
+  var catLabels = {general:'📋',design:'🎨',dev:'💻',review:'🔍',research:'🔬'};
+
+  div.innerHTML = [
+    '<div class="task-top">',
+      '<div class="task-text">'+escHtml(t.text)+'</div>',
+      '<div class="task-actions">',
+        '<button class="task-btn" title="'+nextLabel[t.status]+'" onclick="moveTask(\''+t.id+'\',\''+nextStatus[t.status]+'\')">'+nextLabel[t.status].split(' ')[0]+'</button>',
+        '<button class="task-btn danger" title="Delete" onclick="deleteTask(\''+t.id+'\')">🗑</button>',
+      '</div>',
+    '</div>',
+    '<div class="task-meta">',
+      '<div class="task-tags">',
+        '<span class="tag '+t.priority+'">'+t.priority+'</span>',
+        '<span class="tag cat">'+(catLabels[t.category]||'📋')+' '+t.category+'</span>',
+      '</div>',
+      '<div class="task-author">',
+        '<div class="author-dot" style="background:'+t.authorColor+'">'+initials(t.author)+'</div>',
+        escHtml(t.author),
+      '</div>',
+    '</div>'
+  ].join('');
+  return div;
+}
+
+function renderUsers() {
+  var el = document.getElementById('userList');
+  var users = Object.entries(state.users);
+  if(!users.length) { el.innerHTML = '<div style="font-size:12px;color:var(--ink3);font-style:italic;">No users yet.</div>'; return; }
+  el.innerHTML = '';
+  users.forEach(function(entry){
+    var uid2 = entry[0], u = entry[1];
+    var isMe = uid2 === state.userId;
+    var div = document.createElement('div');
+    div.className = 'user-item';
+    div.innerHTML = [
+      '<div class="user-avatar" style="background:'+u.color+'">'+initials(u.name)+'</div>',
+      '<div class="user-info">',
+        '<div class="user-name">'+escHtml(u.name)+(isMe?'<span class="me-tag">me</span>':'')+'</div>',
+        '<div class="user-status">🟢 active</div>',
+      '</div>'
+    ].join('');
+    el.appendChild(div);
+  });
+}
+
+function renderActivity() {
+  var el = document.getElementById('activityList');
+  if(!state.activity.length) { el.innerHTML = '<div style="font-size:12px;color:var(--ink3);font-style:italic;padding:8px 0;">No activity yet.</div>'; return; }
+  el.innerHTML = '';
+  state.activity.forEach(function(a){
+    var div = document.createElement('div');
+    div.className = 'activity-item';
+    div.innerHTML = [
+      '<div class="activity-dot '+a.type+'"></div>',
+      '<div class="activity-text">'+escHtml(a.text)+'</div>',
+      '<div class="activity-time">'+timeAgo(a.ts)+'</div>'
+    ].join('');
+    el.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  DEMO DATA
+// ═══════════════════════════════════════════
+function loadDemoData() {
+  setSyncStatus('demo','Demo Mode');
+  var demo = [
+    {id:uid(),text:'Design new onboarding flow for mobile users',status:'todo',priority:'high',category:'design',author:'Priya S.',authorColor:avatarColor('Priya S.'),ts:Date.now()-9000},
+    {id:uid(),text:'Fix login bug on Safari — token refresh issue',status:'todo',priority:'high',category:'dev',author:'Arjun K.',authorColor:avatarColor('Arjun K.'),ts:Date.now()-8000},
+    {id:uid(),text:'Write unit tests for the payment module',status:'todo',priority:'medium',category:'dev',author:'Demo User',authorColor:avatarColor('Demo User'),ts:Date.now()-7000},
+    {id:uid(),text:'Review Q2 analytics report with the team',status:'inprogress',priority:'medium',category:'review',author:'Priya S.',authorColor:avatarColor('Priya S.'),ts:Date.now()-6000},
+    {id:uid(),text:'Research competitor pricing and feature matrix',status:'inprogress',priority:'low',category:'research',author:'Demo User',authorColor:avatarColor('Demo User'),ts:Date.now()-5000},
+    {id:uid(),text:'Update README and deployment documentation',status:'done',priority:'low',category:'general',author:'Arjun K.',authorColor:avatarColor('Arjun K.'),ts:Date.now()-4000},
+    {id:uid(),text:'Set up CI/CD pipeline on GitHub Actions',status:'done',priority:'high',category:'dev',author:'Demo User',authorColor:avatarColor('Demo User'),ts:Date.now()-3000},
+  ];
+  demo.forEach(function(t){ state.tasks[t.id] = t; });
+  state.users[state.userId] = { name: state.userName, color: avatarColor(state.userName), ts: Date.now() };
+  state.users['demo-priya'] = { name: 'Priya S.', color: avatarColor('Priya S.'), ts: Date.now() };
+  state.users['demo-arjun'] = { name: 'Arjun K.', color: avatarColor('Arjun K.'), ts: Date.now() };
+  state.activity = [
+    {type:'done',text:'Arjun K. completed "Set up CI/CD pipeline…"',ts:Date.now()-3000},
+    {type:'done',text:'Arjun K. completed "Update README…"',ts:Date.now()-10000},
+    {type:'add',text:'Priya S. added "Review Q2 analytics…"',ts:Date.now()-20000},
+    {type:'add',text:'Demo User added "Research competitor pricing…"',ts:Date.now()-30000},
+  ];
+  document.getElementById('onlineCount').textContent = Object.keys(state.users).length;
+  renderBoard();
+  renderUsers();
+  renderActivity();
+  showToast('Demo loaded — add/move/delete tasks!', 'info');
+}
+
+// ═══════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════
+function setFilter(f, btn) {
+  state.filter = f;
+  document.querySelectorAll('.filter-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderBoard();
+}
+
+function copyRoomId() {
+  navigator.clipboard.writeText(state.roomId).then(function(){
+    showToast('Room ID copied! Share it to collaborate.', 'info');
+  }).catch(function(){
+    showToast('Room: ' + state.roomId, 'info');
+  });
+}
+
+function showConfigModal() {
+  if(savedConfig) {
+    document.getElementById('cfgApiKey').value = savedConfig.apiKey || '';
+    document.getElementById('cfgAuthDomain').value = savedConfig.authDomain || '';
+    document.getElementById('cfgDbUrl').value = savedConfig.databaseURL || '';
+    document.getElementById('cfgProjectId').value = savedConfig.projectId || '';
+  }
+  document.getElementById('configModal').style.display = 'flex';
+}
+function hideConfigModal() { document.getElementById('configModal').style.display = 'none'; }
+function saveFirebaseConfig() {
+  var cfg = {
+    apiKey: document.getElementById('cfgApiKey').value.trim(),
+    authDomain: document.getElementById('cfgAuthDomain').value.trim(),
+    databaseURL: document.getElementById('cfgDbUrl').value.trim(),
+    projectId: document.getElementById('cfgProjectId').value.trim()
+  };
+  if(!cfg.apiKey || !cfg.databaseURL) { showToast('Fill in API Key and Database URL at minimum'); return; }
+  savedConfig = cfg;
+  hideConfigModal();
+  initFirebase(cfg);
+}
+
+function showToast(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'toast ' + (type||'');
+  el.textContent = msg;
+  var c = document.getElementById('toastContainer');
+  c.appendChild(el);
+  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 3000);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Keyboard shortcut: Enter to add task
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter' && e.ctrlKey) { addTask(); }
+});
+
+// Init
+if(savedConfig) { document.getElementById('cfgApiKey').value = savedConfig.apiKey || ''; }
+</script>
+</body>
+</html>
